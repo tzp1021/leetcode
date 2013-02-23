@@ -1,4 +1,4 @@
-//====================Distinct Subsequences======================//
+//===========================Distinct Subsequences============================//
 class Solution {
 public:
     int numDistinct(string S, string T) {
@@ -23,5 +23,38 @@ public:
             }
         }
         return dp[0][0];
+    }
+};
+//============================Search a 2D Matrix===============================//
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int> > &matrix, int target) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int height=matrix.size();
+        int length=matrix[0].size();
+        int i=0,j=height-1;
+        while(i<=j){
+            int tmp=matrix[(i+j)/2][0];
+            if(tmp==target)
+                return true;
+            if(tmp<target)
+                i=(i+j)/2+1;
+            else
+                j=(i+j)/2-1;
+        }
+        if(j<0)
+            return false;
+        int ii=0,jj=length-1;
+        while(ii<=jj){
+            int tmp=matrix[j][(ii+jj)/2];
+            if(tmp==target)
+                return true;
+            if(tmp<target)
+                ii=(ii+jj)/2+1;
+            else
+                jj=(ii+jj)/2-1;
+        }
+        return false;
     }
 };
