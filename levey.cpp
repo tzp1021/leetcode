@@ -92,3 +92,43 @@ public:
         return ans;
     }
 };
+//===========================Search in Rotated Sorted Array================================//
+class Solution {
+public:
+    int search(int A[], int n, int target) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int i=0,j=n-1;
+        while(i<j-1){
+            int mid=(i+j)/2;
+            if(A[mid]>=A[i])
+                i=mid;
+            else
+                j=mid;
+        }
+        if(A[i]<=A[j]){
+            i++;
+            j++;
+        }
+        //i is the max, j is the min
+        int ii,jj;
+        if(A[0]>target){
+            ii=j;
+            jj=n-1;
+        }
+        else{
+            ii=0;
+            jj=i;
+        }
+        while(ii<=jj){
+            int mid=(ii+jj)/2;
+            if(A[mid]==target)
+                return mid;
+            if(A[mid]<target)
+                ii=mid+1;
+            else
+                jj=mid-1;
+        }
+        return -1;
+    }
+};
