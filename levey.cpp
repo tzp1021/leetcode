@@ -58,3 +58,37 @@ public:
         return false;
     }
 };
+//============================Search for a Range===================================//
+class Solution {
+public:
+    vector<int> searchRange(int A[], int n, int target) {
+        // Start typing your C/C++ solution below
+        // DO NOT write int main() function
+        int i=0,j=n-1;
+        while(i<=j){
+            int mid=(i+j)/2;
+            if(A[mid]<=target)
+                i=mid+1;
+            else
+                j=mid-1;
+        }
+        int ii=0,jj=n-1;
+        while(ii<=jj){
+            int mid=(ii+jj)/2;
+            if(A[mid]<target)
+                ii=mid+1;
+            else
+                jj=mid-1;
+        }
+        vector<int> ans;
+        if(i-jj>1){
+            ans.push_back(jj+1);
+            ans.push_back(i-1);
+        }
+        else{
+            ans.push_back(-1);
+            ans.push_back(-1);
+        }
+        return ans;
+    }
+};
