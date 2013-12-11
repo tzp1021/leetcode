@@ -159,4 +159,48 @@ public:
     }
 };
 
+//Search Insert Position
+class Solution {
+public:
+    int searchInsert(int A[], int n, int target) {
+        int i=0,j=n-1;
+        while(i<=j) {
+            int mid=(i+j)/2;
+            if(target<=A[mid])
+                j=mid-1;
+            else
+                i=mid+1;
+        }
+        return i;
+    }
+};
+
+//Remove Duplicates from Sorted List
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *deleteDuplicates(ListNode *head) {
+        ListNode* ans=head;
+        if(head==NULL)
+            return ans;
+        while(head->next!=NULL) {
+            if(head->val==head->next->val) {
+                ListNode* tmp=head->next;
+                head->next=tmp->next;
+                delete(tmp);
+            }
+            else
+                head=head->next;
+        }
+        return ans;
+    }
+};
+
 //
