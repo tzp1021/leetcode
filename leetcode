@@ -1,1 +1,110 @@
 //Fight!
+//Single Number
+class Solution {
+public:
+    int singleNumber(int A[], int n) {
+        int ans=0;
+        for(int i=0;i<n;i++)
+            ans=ans^A[i];
+        return ans;
+    }
+};
+
+//Maximum Depth of Binary Tree
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int maxDepth(TreeNode *root) {
+        int max_depth=0;
+        go(root,0,max_depth);
+        return max_depth;
+    }
+    void go(TreeNode *node,int depth, int &max_depth) {
+        if(node!=NULL) {
+            depth++;
+            if(depth>max_depth)
+                max_depth=depth;
+            go(node->left,depth,max_depth);
+            go(node->right,depth,max_depth);
+        }
+    }
+};
+
+//Same Tree
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSameTree(TreeNode *node1, TreeNode *node2) {
+         if(node1!=NULL && node2==NULL)
+            return false;
+        else if(node1==NULL && node2!=NULL)
+            return false;
+        else if(node1!=NULL && node2!=NULL) {
+            if(node1->val!=node2->val)
+                return false;
+            else
+                return isSameTree(node1->left,node2->left) && isSameTree(node1->right,node2->right);
+        }
+        return true;
+    }
+};
+
+//Reverse Integer
+class Solution {
+public:
+    int reverse(int x) {
+        bool flag=false;
+        if(x<0) {
+            x=-x;
+            flag=true;
+        }
+        int a[20];
+        int n=0;
+        while(x) {
+            a[n]=x%10;
+            x/=10;
+            n++;
+        }
+        int ans=0;
+        for(int i=0;i<n;i++)
+			ans=ans*10+a[i];
+        if(flag)
+            ans=-ans;
+        return ans;
+    }
+};
+
+//Best Time to Buy and Sell Stock II
+class Solution {
+public:
+    int maxProfit(vector<int> &prices) {
+        int n=prices.size();
+        if(n==0)
+            return 0;
+        int buy=prices[0];
+        int ans=0;
+        for(int i=1;i<n;i++) {
+            if(prices[i]>buy)
+                ans+=prices[i]-buy;
+            buy=prices[i];
+        }
+        return ans;
+    }
+};
+
