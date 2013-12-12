@@ -239,4 +239,16 @@ public:
     }
 };
 
-//
+//Climbing Stairs
+class Solution {
+public:
+    int climbStairs(int n) {
+        int a[2]={1,1},k;
+        for(k=2;k<=n;k++) {
+            a[k%2]=a[0]+a[1];
+        }
+        return a[(k+1)%2];
+    }
+};
+
+
