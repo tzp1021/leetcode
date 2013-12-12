@@ -203,4 +203,40 @@ public:
     }
 };
 
+//Binary Tree Inorder Traversal 
+class Solution {
+public:
+    vector<int> inorderTraversal(TreeNode *root) {
+        vector<int> ans;
+        if(root!=NULL)
+            inorderTravel(root,ans);
+        return ans;
+    }
+    void inorderTravel(TreeNode *node, vector<int> &v) {
+        if(node->left!=NULL)
+            inorderTravel(node->left,v);
+        v.push_back(node->val);
+        if(node->right!=NULL)
+            inorderTravel(node->right,v);
+    }
+};
+
+//Binary Tree Preorder Traversal
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode *root) {
+        vector<int> ans;
+        if(root!=NULL)
+            preorderTravel(root,ans);
+        return ans;
+    }
+    void preorderTravel(TreeNode *node, vector<int> &v) {
+        v.push_back(node->val);
+        if(node->left!=NULL)
+            preorderTravel(node->left,v);
+        if(node->right!=NULL)
+            preorderTravel(node->right,v);
+    }
+};
+
 //
