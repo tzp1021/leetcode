@@ -1,4 +1,5 @@
 //Fight!
+
 //Single Number
 class Solution {
 public:
@@ -11,15 +12,6 @@ public:
 };
 
 //Maximum Depth of Binary Tree
-/**
- * Definition for binary tree
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
 class Solution {
 public:
     int maxDepth(TreeNode *root) {
@@ -39,15 +31,6 @@ public:
 };
 
 //Same Tree
-/**
- * Definition for binary tree
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
- */
 class Solution {
 public:
     bool isSameTree(TreeNode *node1, TreeNode *node2) {
@@ -97,14 +80,6 @@ public:
 };
 
 //Linked List Cycle 
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
 class Solution {
 public:
     bool hasCycle(ListNode *head) {
@@ -176,14 +151,6 @@ public:
 };
 
 //Remove Duplicates from Sorted List
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
- */
 class Solution {
 public:
     ListNode *deleteDuplicates(ListNode *head) {
@@ -250,5 +217,153 @@ public:
         return a[(k+1)%2];
     }
 };
+
+//Remove Element
+class Solution {
+public:
+    int removeElement(int A[], int n, int elem) {
+        int i=0,j=n-1;
+        while(i<=j) {
+            while(i<n && A[i]!=elem)
+                i++;
+            while(j>=0 && A[j]==elem)
+                j--;
+            if(i>j)
+                break;
+            int t=A[i];
+            A[i++]=A[j];
+            A[j--]=t;
+        }
+        return i;
+    }
+};
+
+//Remove Duplicates from Sorted Array
+class Solution {
+public:
+    int removeDuplicates(int A[], int n) {
+        if(n==0)
+            return 0;
+        int i=1;
+        while(i<n && A[i-1]<A[i])
+            i++;
+        int j=i+1;
+        while(j<n) {
+            while(j<n && A[j]<=A[j-1])
+                j++;
+            if(j>=n)
+                break;
+            A[i++]=A[j++];
+        }
+        return i;
+    }
+};
+
+//Maximum Subarray 
+class Solution {
+public:
+    int maxSubArray(int A[], int n) {
+        int ans=A[0],tmp=A[0];
+        for(int i=1;i<n;i++) {
+            tmp=(tmp<0) ? 0 : tmp;
+            tmp+=A[i];
+            ans=(tmp>ans) ? tmp : ans;
+        }
+        return ans;
+    }
+};
+
+//Symmetric Tree 
+class Solution {
+public:
+    bool isSymmetric(TreeNode *root) {
+        if(root!=NULL)
+            return isSame(root->left, root->right);
+        return true;
+    }
+    bool isSame(TreeNode *node1, TreeNode *node2) {
+        if(node1==NULL && node2==NULL)
+            return true;
+        if(node1!=NULL && node2==NULL)
+            return false;
+        if(node1==NULL && node2!=NULL)
+            return false;
+        if(node1->val!=node2->val)
+            return false;
+        return isSame(node1->left,node2->right) 
+            && isSame(node1->right, node2->left);
+    }
+};
+
+//Merge Two Sorted Lists
+class Solution {
+public:
+    ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) {
+        if(l2==NULL)
+            return l1;
+        if(l1==NULL)
+            return l2;
+        ListNode *ans=l1;
+        if(l1->val > l2->val) {
+            l1=l2;
+            l2=ans;
+            ans=l1;
+        }
+        while(l1->next!=NULL && l2!=NULL) {
+            if(l1->next->val > l2->val) {
+                ListNode *t1=l1->next;
+                ListNode *t2=l2->next;
+                l1->next=l2;
+                l2->next=t1;
+                l1=l2;
+                l2=t2;
+            }
+            else
+                l1=l1->next;
+        }
+        if(l2!=NULL)
+            l1->next=l2;
+        return ans;
+    }
+};
+
+//Convert Sorted Array to Binary Search Tree
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode *sortedArrayToBST(vector<int> &num) {
+        int n=num.size();
+        if(n==0) {
+            static TreeNode *root;
+            return root;
+        }
+        TreeNode *root=new TreeNode(0);
+        construct(num,0,n-1,root);
+        return root;
+    }
+    void construct(vector<int> &num, int i, int j, TreeNode *node) {
+        int mid=(i+j)/2;
+        node->val=num[mid];
+        if(i<mid) {
+            TreeNode *l=new TreeNode(0);
+            node->left=l;
+            construct(num,i,mid-1,l);
+        }
+        if(j>mid) {
+            TreeNode *r=new TreeNode(0);
+            node->right=r;
+            construct(num,mid+1,j,r);
+        }
+    }
+};
+
 
 
