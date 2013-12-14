@@ -363,5 +363,48 @@ public:
     }
 };
 
+//class Solution {
+public:
+    void nextPermutation(vector<int> &num) {
+        const int n=num.size();
+        int start=n-1;
+        while(start>0 && num[start]<=num[start-1])
+            start--;
+        if(start>0) {
+            int index=start;
+            for(int i=start+1;i<n;i++)
+                if(num[i]>num[start-1] && num[i]<num[index])
+                    index=i;
+            int tmp=num[index];
+            num[index]=num[start-1];
+            num[start-1]=tmp;
+        }
+        sort(num,start,n-1);
+    }
+    void sort(vector<int> &num,int s,int e) {
+        if(s>=e)
+            return;
+        int i=s+1;
+        int j=e;
+        while(i<=j) {
+            while(i<=e && num[i]<=num[s])
+                i++;
+            while(j>=s && num[j]>num[s])
+                j--;
+            if(i>=j)
+                break;
+            int t=num[i];
+            num[i]=num[j];
+            num[j]=t;
+        }
+        int t=num[s];
+        num[s]=num[j];
+        num[j]=t;
+        if(j-1>s)
+            sort(num,s,j-1);
+        if(i<e)
+            sort(num,i,e);
+    }
+};
 
 
