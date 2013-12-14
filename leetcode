@@ -341,10 +341,8 @@ class Solution {
 public:
     TreeNode *sortedArrayToBST(vector<int> &num) {
         int n=num.size();
-        if(n==0) {
-            static TreeNode *root;
-            return root;
-        }
+        if(n==0) 
+            return NULL;
         TreeNode *root=new TreeNode(0);
         construct(num,0,n-1,root);
         return root;
