@@ -363,7 +363,8 @@ public:
     }
 };
 
-//class Solution {
+//Next Permutation 
+class Solution {
 public:
     void nextPermutation(vector<int> &num) {
         const int n=num.size();
