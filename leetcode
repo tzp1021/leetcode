@@ -468,4 +468,37 @@ public:
     }
 };
 
-//
+//Best Time to Buy and Sell Stock 
+class Solution {
+public:
+    int maxProfit(vector<int> &prices) {
+        int n=prices.size();
+        int ans=0,tmp=0;
+        for(int i=1;i<n;i++) {
+            tmp+=prices[i]-prices[i-1];
+            if(tmp>ans)
+                ans=tmp;
+            if(tmp<0)
+                tmp=0;
+        }
+        return ans;
+    }
+};
+
+//Balanced Binary Tree
+class Solution {
+public:
+    bool isBalanced(TreeNode *root) {
+        if(root==NULL)
+            return true;
+        int c=height(root->left)-height(root->right);
+        if(c>=-1 && c<=1 && isBalanced(root->left) && isBalanced(root->right))
+            return true;
+        return false;
+    }
+    int height(TreeNode *node) {
+        if(node==NULL)
+            return 0;
+        return max(height(node->left),height(node->right))+1;
+    }
+};
