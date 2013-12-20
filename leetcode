@@ -502,3 +502,132 @@ public:
         return max(height(node->left),height(node->right))+1;
     }
 };
+
+//Gray Code
+class Solution {
+public:
+    vector<int> grayCode(int n) {
+        vector<int> ans;
+        ans.push_back(0);
+        int k=1;
+        for(int i=0;i<n;i++) {
+            for(int j=k-1;j>=0;j--) 
+                ans.push_back(ans[j]+k);
+            k=k<<1;
+        }
+        return ans;
+    }
+};
+
+//Binary Tree Level Order Traversal II 
+class Solution {
+public:
+    vector<vector<int> > levelOrderBottom(TreeNode *root) {
+        vector<vector<int> > ans;
+        if(root==NULL)
+            return ans;
+        queue<TreeNode*> level;
+        int width=1;
+        level.push(root);
+        while(!level.empty()) {
+            int num=0;
+            vector<int> v;
+            for(int i=0;i<width;i++) {
+                TreeNode *node=level.front();
+                level.pop();
+                v.push_back(node->val);
+                if(node->left!=NULL) {
+                    level.push(node->left);
+                    num++;
+                }
+                if(node->right!=NULL) {
+                    level.push(node->right);
+                    num++;
+                }
+            }
+            width=num;
+            ans.push_back(v);
+        }
+        int n=ans.size()-1;
+        vector<vector<int> > fin_ans;
+        while(n>=0) 
+            fin_ans.push_back(ans[n--]);
+        return fin_ans;
+    }
+};
+
+//Permutations 
+class Solution {
+public:
+    vector<vector<int> > permute(vector<int> &num) {
+        vector<vector<int> > ans;
+        int n=num.size();
+        go(ans,num,n,0);
+        return ans;
+    }
+    void go(vector<vector<int> > &ans,vector<int> &num, int n,int k) {
+        if(k==n) {
+            ans.push_back(num);
+            return;
+        }
+        for(int i=k;i<n;i++) {
+            swap(num,i,k);
+            go(ans,num,n,k+1);
+            swap(num,i,k);
+        }
+    }
+    void swap(vector<int> &num, int i, int k) {
+        int tmp=num[i];
+        num[i]=num[k];
+        num[k]=tmp;
+    }
+};
+
+//Minimum Path Sum 
+class Solution {
+public:
+    int minPathSum(vector<vector<int> > &grid) {
+        int m=grid.size();
+        int n=grid[0].size();
+        vector<int> v;
+        int tmp=0;
+        for(int i=0;i<n;i++) {
+            tmp+=grid[0][i];
+            v.push_back(tmp);
+        }
+        for(int i=1;i<m;i++) {
+            v[0]+=grid[i][0];
+            for(int j=1;j<n;j++) 
+                v[j]=min(v[j],v[j-1])+grid[i][j];
+        }
+        return v[n-1];
+    }
+};
+
+//Single Number II
+class Solution {
+public:
+    int singleNumber(int A[], int n) {
+        int bits[32];
+        memset(bits,0,sizeof(bits));
+        for(int i=0;i<n;i++) {
+            int num=A[i];
+            int k=0;
+            for(int j=0;j<32;j++) {
+                bits[k++]+=num&1;
+                num=num>>1;
+            }
+        }
+        int ans=0;
+        long long k=1;
+        for(int i=0;i<31;i++) {
+            bits[i]%=3;
+            if(bits[i]!=0)
+                ans+=k;
+            k=k<<1;
+        }
+        if(bits[31]%3!=0)
+            ans=(long long)ans-k;
+        return ans;
+    }
+};
