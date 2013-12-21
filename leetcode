@@ -662,3 +662,34 @@ public:
         }
     }
 };
+
+//Linked List Cycle II 
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode *oneStep=head;
+        ListNode *twoStep=head;
+        while(twoStep!=NULL) {
+            if(oneStep->next!=NULL)
+                oneStep=oneStep->next;
+            if(twoStep->next!=NULL && twoStep->next->next!=NULL)
+                twoStep=twoStep->next->next;
+            else
+                return NULL;
+            if(oneStep==twoStep) 
+                break;
+        }
+        ListNode *start=head;
+        while(1) {
+            if(start==oneStep)
+                return start;
+            oneStep=oneStep->next;
+            while(oneStep!=twoStep) {
+                if(start==oneStep)
+                    return start;
+                oneStep=oneStep->next;
+            }
+            start=start->next;
+        }
+    }
+};
