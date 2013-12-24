@@ -693,3 +693,58 @@ public:
         }
     }
 };
+
+//Search a 2D Matrix 
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int> > &matrix, int target) {
+        int m=matrix.size();
+        int n=matrix[0].size();
+        int i=0;
+        int j=m-1;
+        while(i<=j) {
+            int mid=(i+j)/2;
+            if(matrix[mid][0]<=target)
+                i=mid+1;
+            else
+                j=mid-1;
+        }
+        if(j<0)
+            return false;
+        int ii=0;
+        int jj=n-1;
+        while(ii<=jj) {
+            int mid=(ii+jj)/2;
+            if(matrix[j][mid]<=target)
+                ii=mid+1;
+            else
+                jj=mid-1;
+        }
+        if(jj<0)
+            return false;
+        if(matrix[j][jj]==target)
+            return true;
+    }
+};
+
+//Plus One class Solution {
+public:
+    vector<int> plusOne(vector<int> &digits) {
+        vector<int> ans;
+        int n=digits.size()-1;
+        while(n>=0 && digits[n]==9) {
+            ans.insert(ans.begin(),0);
+            n--;
+        }
+        if(n<0)
+            ans.insert(ans.begin(),1);
+        else {
+            ans.insert(ans.begin(),digits[n--]+1);
+            while(n>=0)
+                ans.insert(ans.begin(),digits[n--]);
+        }
+        return ans;
+    }
+};
+
+//
