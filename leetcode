@@ -747,4 +747,71 @@ public:
     }
 };
 
+//Jump Game
+class Solution {
+public:
+    bool canJump(int A[], int n) {
+        int maxx=0;
+        for(int i=0;i<n;i++) {
+            if(i>maxx)
+                break;
+            maxx=(maxx>=A[i]+i) ? maxx : A[i]+i;
+            if(maxx>=n-1)
+                return true;
+        }
+        return false;
+    }
+};
+
+//Binary Tree Postorder Traversal 
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode *root) {
+        vector<int> ans;
+        if(root!=NULL)
+            postTravel(root,ans);
+        return ans;
+    }
+    void postTravel(TreeNode *node, vector<int> &ans) {
+        if(node->left!=NULL)
+            postTravel(node->left,ans);
+        if(node->right!=NULL)
+            postTravel(node->right,ans);
+        ans.push_back(node->val);
+    }
+};
+
+//Binary Tree Level Order Traversal 
+class Solution {
+public:
+    vector<vector<int> > levelOrder(TreeNode *root) {
+        vector<vector<int> > ans;
+        if(root==NULL)
+            return ans;
+        queue<TreeNode*> level;
+        int width=1;
+        level.push(root);
+        while(!level.empty()) {
+            int num=0;
+            vector<int> v;
+            for(int i=0;i<width;i++) {
+                TreeNode *node=level.front();
+                level.pop();
+                v.push_back(node->val);
+                if(node->left!=NULL) {
+                    level.push(node->left);
+                    num++;
+                }
+                if(node->right!=NULL) {
+                    level.push(node->right);
+                    num++;
+                }
+            }
+            width=num;
+            ans.push_back(v);
+        }
+        return ans;
+    }
+};
+
 //
