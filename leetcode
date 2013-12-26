@@ -858,3 +858,62 @@ public:
         }
     }
 };
+
+//Container With Most Water 
+class Solution {
+public:
+    int maxArea(vector<int> &height) {
+        int j=height.size()-1;
+        int i=0;
+        int ans=0;
+        while(i<j) {
+            int tmp=min(height[i],height[j])*(j-i);
+            ans=(tmp>ans)? tmp : ans;
+            if(height[i]>height[j]) {
+                int k=j-1;
+                while(k>i && height[k]<=height[j])
+                    k--;
+                j=k;
+            }
+            else {
+                int k=i+1;
+                while(k<j && height[k]<=height[i])
+                    k++;
+                i=k;
+            }
+        }
+        return ans;
+    }
+};
+
+//Sort Colors 
+class Solution {
+public:
+    void sortColors(int A[], int n) {
+        int i=0;
+        while(i<n && A[i]==0)
+            i++;
+        int j=n-1;
+        while(j>=0 && A[j]==2)
+            j--;
+        int k=i;
+        while(k<=j) {
+            if(k<j && A[k]==2) {
+                A[k]=A[j];
+                A[j--]=2;
+                while(j>=0 && A[j]==2)
+                    j--;
+            }
+            else if(i<k && A[k]==0) {
+                A[k]=A[i];
+                A[i++]=0;
+                while(i<n && A[i]==0)
+                    i++;
+            }
+            else
+                k++;
+        }
+    }
+};
+
+//
