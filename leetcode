@@ -916,4 +916,22 @@ public:
     }
 };
 
-//
+//Path Sum
+class Solution {
+public:
+    bool hasPathSum(TreeNode *root, int sum) {
+        return go(root,0,sum);
+    }
+    bool go(const TreeNode *node, int s, const int &sum) {
+        if(node==NULL)
+            return false;
+        s+=node->val;
+        if(node->left==NULL && node->right==NULL) {
+            if(s==sum)
+                return true;
+            else
+                return false;
+        }
+        return go(node->left, s, sum) || go(node->right, s, sum);
+    }
+};
