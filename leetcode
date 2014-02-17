@@ -950,3 +950,86 @@ public:
         return ans;
     }
 };
+
+//Search in Rotated Sorted Array
+class Solution {
+public:
+    int search(int A[], int n, int target) {
+        int i=0;
+        int j=n-1;
+        int mid;
+        while(A[i]>A[j]) {
+            mid=(i+j)/2;
+            if(A[i]>=A[mid])
+                j=mid;
+            else
+                i=mid;
+        }
+        mid=j;
+        if(target>=A[0])
+            return binarySearch(0,mid,A,target);
+        else
+            return binarySearch(mid+1,n-1,A,target);
+    }
+    int binarySearch(int i, int j, const int A[], const int target) {
+        while(i<=j) {
+            int mid=(i+j)/2;
+            if(target==A[mid])
+                return mid;
+            if(target>A[mid])
+                i=mid+1;
+            else
+                j=mid-1;
+        }
+        return -1;
+    }
+};
+
+//Search in Rotated Sorted Array II
+class Solution {
+public:
+    bool search(int A[], int n, int target) {
+        int mid=0;
+        while(mid<n-1 && A[mid]<=A[mid+1])
+            mid++;
+        if(target>=A[0])
+            return binarySearch(0,mid,A,target);
+        else
+            return binarySearch(mid+1,n-1,A,target);
+    }
+    bool binarySearch(int i, int j, const int A[], const int target) {
+        while(i<=j) {
+            int mid=(i+j)/2;
+            if(target==A[mid])
+                return true;
+            if(target>A[mid])
+                i=mid+1;
+            else
+                j=mid-1;
+        }
+        return false;
+    }
+};
+
+//Remove Nth Node From End of List
+class Solution {
+public:
+    ListNode *removeNthFromEnd(ListNode *head, int n) {
+        ListNode dummy(0);
+        dummy.next=head;
+        ListNode *front, *back;
+        front=back=&dummy;
+        for(int i=0;i<n;i++)
+            back=back->next;
+        while(back!=NULL && back->next!=NULL) {
+            front=front->next;
+            back=back->next;
+        }
+        ListNode *tmp=front->next;
+        front->next=tmp->next;
+        delete tmp;
+        return dummy.next;
+    }
+};
+
+//
