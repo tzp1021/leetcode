@@ -127,7 +127,7 @@ public:
             return ;
         if(root->left!=NULL && root->right!=NULL)
             root->left->next=root->right;
-        if(root->left!=NULL && root->next!=NULL)
+        if(root->right!=NULL && root->next!=NULL)
             root->right->next=root->next->left;
         connect(root->left);
         connect(root->right);
@@ -1032,4 +1032,46 @@ public:
     }
 };
 
+//Populating Next Right Pointers in Each Node II 
+class Solution {
+public:
+    void connect(TreeLinkNode *root) {
+        TreeLinkNode *current=root;
+        while(true) {
+            TreeLinkNode *start=NULL;
+            TreeLinkNode *left=NULL;
+            while(current!=NULL) {
+                if(current->left!=NULL) {
+                    if(start==NULL) {
+                        start=current->left;
+                        left=start;
+                    }
+                    else {
+                        left->next=current->left;
+                        left=left->next;
+                    }
+                }
+                if(current->right!=NULL) {
+                    if(start==NULL) {
+                        start=current->right;
+                        left=start;
+                    }
+                    else {
+                        left->next=current->right;
+                        left=left->next;
+                    }
+                }
+                current=current->next;
+            }
+            if(left!=NULL) {
+                left->next=NULL;
+                current=start;    
+            }
+            else
+                break;
+        }
+    }
+};
+
 //
+
