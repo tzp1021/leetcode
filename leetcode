@@ -1189,6 +1189,71 @@ public:
     }
 };
 
-//
+//Path Sum II 
+class Solution {
+public:
+    vector<vector<int> > pathSum(TreeNode *root, int tar) {
+        vector<vector<int> > ans;
+        vector<int> path;
+        go(root,0,tar,path,ans);
+        return ans;
+    }
+    void go(const TreeNode * const node, int sum, const int tar,
+                vector<int> &path, vector<vector<int> > &ans) {
+        if(node==NULL)
+            return ;
+        path.push_back(node->val);
+        sum+=node->val;
+        if(node->left==NULL && node->right==NULL && sum==tar) 
+            ans.push_back(path);
+        go(node->left, sum, tar, path, ans);
+        go(node->right, sum, tar, path, ans);
+        path.pop_back();
+    }
+};
 
+//Valid Sudoku 
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char> > &board) {
+        bool a[10];
+        for(int i=0;i<9;i++) {
+            memset(a,false,sizeof(a));
+            for(int j=0;j<9;j++) {
+                if(board[i][j]=='.')
+                    continue;
+                if(a[board[i][j]-'1']==true) 
+                    return false;
+                a[board[i][j]-'1']=true;
+            }
+        }
+        for(int j=0;j<9;j++) {
+            memset(a,false,sizeof(a));
+            for(int i=0;i<9;i++) {
+                if(board[i][j]=='.')
+                    continue;
+                if(a[board[i][j]-'1']==true)
+                    return false;
+                a[board[i][j]-'1']=true;
+            }
+        }
+        for(int i=0;i<9;i+=3) {
+            for(int j=0;j<9;j+=3) {
+                memset(a,false,sizeof(a));
+                for(int ii=0;ii<3;ii++) {
+                    for(int jj=0;jj<3;jj++) {
+                        if(board[i+ii][j+jj]=='.')
+                        continue;
+                        if(a[board[i+ii][j+jj]-'1']==true)
+                            return false;
+                        a[board[i+ii][j+jj]-'1']=true;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+};
+
+//
 
