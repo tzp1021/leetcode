@@ -1073,5 +1073,122 @@ public:
     }
 };
 
+//Sum Root to Leaf Numbers
+class Solution {
+public:
+    int sumNumbers(TreeNode *root) {
+        return go(root,0);
+    }
+    int go(const TreeNode * const node, const int num) {
+        if(node==NULL)
+            return 0;
+        int tmp=num*10+node->val;
+        if(node->left==NULL && node->right==NULL)
+            return tmp;
+        return go(node->left,tmp)+go(node->right,tmp);
+    }
+};
+
+//Minimum Depth of Binary Tree
+class Solution {
+public:
+    int minDepth(TreeNode *root) {
+        int ans=0;
+        go(root,1,ans);
+        return ans;
+    }
+    void go(const TreeNode * const node, const int n, int &ans) {
+        if(node==NULL)
+            return ;
+        if(ans!=0 && n>=ans)
+            return ;
+        if(node->left==NULL && node->right==NULL) {
+            ans=n;
+            return ;
+        }
+        go(node->left,n+1,ans);
+        go(node->right,n+1,ans);
+        
+    }
+};
+
+//Trapping Rain Water
+class Solution {
+public:
+    int trap(int A[], int n) {
+        stack<int> desc_que;
+        stack<int> desc_ind;
+        int ans=0;
+        desc_que.push(A[0]);
+        desc_ind.push(0);
+        for(int i=1;i<n;i++) {
+            int tmp=desc_que.top();
+            while(!desc_que.empty() && A[i]>tmp) {
+                desc_que.pop();
+                desc_ind.pop();
+                if(desc_que.empty())
+                    break;
+                if(desc_que.top()<A[i]) 
+                    ans+=(desc_que.top()-tmp)*(i-desc_ind.top()-1);
+                else
+                    ans+=(A[i]-tmp)*(i-desc_ind.top()-1);
+                tmp=desc_que.top();
+            }
+            if(desc_que.empty() || A[i]<tmp) {
+                desc_que.push(A[i]);
+                desc_ind.push(i);
+            }
+            else if(A[i]==tmp) {
+                desc_ind.pop();
+                desc_ind.push(i);
+            }
+        }
+        return ans;
+    }
+};
+
+//Length of Last Word
+class Solution {
+public:
+    int lengthOfLastWord(const char *s) {
+        int i=0;
+        int ans=0;
+        int tmp=0;
+        while(s[i]!=NULL) {
+            if(s[i++]!=' ')
+                tmp++;
+            else {
+                ans=(tmp==0)? ans : tmp;
+                tmp=0;
+            }
+        }
+        ans=(tmp==0)? ans : tmp;
+        return ans;
+    }
+};
+
+//Valid Parentheses
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> sta;
+        int len=s.length();
+        for(int i=0;i<len;i++) {
+            if(s[i]=='(' || s[i]=='[' || s[i]=='{')
+                sta.push(s[i]);
+            else if(sta.empty() || 
+                    ((s[i]==')' && sta.top()!='(')) ||
+                    ((s[i]==']' && sta.top()!='[')) ||
+                    ((s[i]=='}' && sta.top()!='{')) )
+                    return false;
+            else sta.pop();
+        }
+        if(sta.empty())
+            return true;
+        return false;
+    }
+};
+
 //
+
 
