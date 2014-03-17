@@ -1442,6 +1442,64 @@ public:
     }
 };
 
+//3Sum Closest 
+class Solution {
+public:
+    int threeSumClosest(vector<int> &num, int target) {
+        int n=num.size();
+        sort(num.begin(),num.end());
+        int ans=num[0]+num[1]+num[n-1];
+        for(int k=0;k<n;k++) {
+            int i=(k==0)?1:0;
+            int j=(k==n-1)?n-2:n-1;
+            int tmp=num[k]+num[i]+num[j];
+            if(abs(ans-target)>abs(tmp-target))
+                ans=tmp;
+            while(i<j) {
+                if(tmp<target)
+                    i++;
+                else if(tmp>target)
+                    j--;
+                else
+                    return target;
+                if(i==k) i++;
+                if(j==k) j--;
+                if(i==j) break;
+                tmp=num[k]+num[i]+num[j];
+                if(abs(ans-target)>abs(tmp-target))
+                    ans=tmp;
+            }
+        }
+        return ans;
+    }
+};
 
+//Count and Say
+class Solution {
+public:
+    string countAndSay(int n) {
+        if(n<=0)
+            return "";
+        string ans="1";
+        for(int i=1;i<n;i++) {
+            int len=ans.length();
+            int j=0;
+            string tmp="";
+            while(j<len) {
+                int count=1;
+                while(j<len-1 && ans[j+1]==ans[j]) {
+                    count++;
+                    j++;
+                }
+                tmp+=char('0'+count-0);
+                tmp+=ans[j];
+                j++;
+            }
+            ans=tmp;
+        }
+        return ans;
+    }
+};
 
+//
 
