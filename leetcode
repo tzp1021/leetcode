@@ -1501,5 +1501,72 @@ public:
     }
 };
 
-//
+//Pow(x, n) 
+class Solution {
+public:
+    double pow(double x, int n) {
+        if(n==0)
+            return 1;
+        if(n<0) {
+            x=1.0/x;
+            n=-n;
+        }
+        if(n&1) 
+            return x*pow(x*x,n/2);
+        else
+            return pow(x*x,n/2);
+    }
+};
+
+//Combination Sum
+class Solution {
+public:
+    vector<vector<int> > combinationSum(vector<int> &candidates, int target) {
+        sort(candidates.begin(),candidates.end());
+        vector<vector<int> > ans;
+        vector<int> cur;
+        go(candidates,0,target,ans,cur);
+        return ans;
+    }
+    void go(vector<int> &candidates, int ind, int target, vector<vector<int> > &ans, vector<int> &cur) {
+        if(target==0) {
+            ans.push_back(cur);
+            return;
+        }
+        int n=candidates.size();
+        while(ind<n && candidates[ind]<=target) {
+            cur.push_back(candidates[ind]);
+            go(candidates,ind,target-candidates[ind],ans,cur);
+            cur.pop_back();
+            ind++;
+        }
+    }
+};
+
+//Triangle
+class Solution {
+public:
+    int minimumTotal(vector<vector<int> > &triangle) {
+        int n=triangle.size();
+        int *row=new int[n];
+        for(int i=0;i<n;i++)
+            row[i]=0;
+        row[0]=triangle[0][0];
+        for(int i=1;i<n;i++) {
+            int tmp=row[0];
+            row[0]+=triangle[i][0];
+            for(int j=1;j<i;j++) {
+                int t=min(row[j],tmp)+triangle[i][j];
+                tmp=row[j];
+                row[j]=t;
+            }
+            row[i]=tmp+triangle[i][i];
+        }
+        int ans=row[0];
+        for(int i=1;i<n;i++)
+            ans=min(ans,row[i]);
+        delete []row;
+        return ans;
+    }
+};
 
