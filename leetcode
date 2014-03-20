@@ -1570,3 +1570,114 @@ public:
     }
 };
 
+//Construct Binary Tree from Inorder and Postorder Traversal
+class Solution {
+public:
+    TreeNode *buildTree(vector<int> &inorder, vector<int> &postorder) {
+        int n=inorder.size();
+        TreeNode *root=build(inorder,postorder,0,n-1,0,n-1);
+        return root;
+    }
+    TreeNode *build(vector<int> &inorder, vector<int> &postorder, int is, int ie, int ps, int pe) {
+        if(ps>pe)
+            return NULL;
+        TreeNode *head=new TreeNode(postorder[pe]);
+        int i=is;
+        while(i<=ie && inorder[i]!=postorder[pe])
+            i++;
+        head->left=build(inorder,postorder,is,i-1,ps,ps+i-is-1);
+        head->right=build(inorder,postorder,i+1,ie,ps+i-is,pe-1);
+		return head;
+    }
+};
+
+//N-Queens
+class Solution {
+public:
+    vector<vector<string> > solveNQueens(int n) {
+        int *row=new int[n];
+        vector<vector<string> > ans;
+        go(0,row,ans,n);
+        delete []row;
+        return ans;
+    }
+    void go(const int k, int *row, vector<vector<string> > &ans, const int n) {
+        if(k==n) {
+            vector<string> cur;
+            for(int i=0;i<n;i++) {
+                string s="";
+                for(int j=0;j<n;j++) {
+                    if(j==row[i])
+                        s+='Q';
+                    else
+                        s+='.';
+                }
+                cur.push_back(s);
+            }
+            ans.push_back(cur);
+            return ;
+        }
+        for(int i=0;i<n;i++) {
+            bool flag=true;
+            for(int j=0;j<k;j++) {
+                if(i==row[j] || (k-j)==abs(i-row[j])) {
+                    flag=false;
+                    break;
+                }
+            }
+            if(flag==false)
+                continue;
+            row[k]=i;
+            go(k+1,row,ans,n);
+        }
+    }
+};
+
+//Pow(x, n) 
+class Solution {
+public:
+    double pow(double x, int n) {
+        if(n==0)
+            return 1;
+        if(n<0) {
+            x=1.0/x;
+            n=-n;
+        }
+        if(n&1) 
+            return x*pow(x*x,n/2);
+        else
+            return pow(x*x,n/2);
+    }
+};
+
+//Combination Sum
+class Solution {
+public:
+    vector<vector<int> > combinationSum(vector<int> &candidates, int target) {
+        sort(candidates.begin(),candidates.end());
+        vector<vector<int> > ans;
+        vector<int> cur;
+        go(candidates,0,target,ans,cur);
+        return ans;
+    }
+    void go(vector<int> &candidates, int ind, int target, vector<vector<int> > &ans, vector<int> &cur) {
+        if(target==0) {
+            ans.push_back(cur);
+            return;
+        }
+        int n=candidates.size();
+        while(ind<n && candidates[ind]<=target) {
+            cur.push_back(candidates[ind]);
+            go(candidates,ind,target-candidates[ind],ans,cur);
+            cur.pop_back();
+            ind++;
+        }
+    }
+};
+
+//
+
+
+
+
+
