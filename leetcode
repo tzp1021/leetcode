@@ -1675,7 +1675,86 @@ public:
     }
 };
 
-//
+//Add Binary
+class Solution {
+public:
+    string addBinary(string a, string b) {
+        string ans="";
+        if(a.length()>b.length())
+            swap(a,b);
+        int len1=a.length();
+        int len2=b.length();
+        int flag=0;
+        for(int i=0;i<len1;i++) {
+            flag=a[len1-1-i]-'0'+b[len2-1-i]-'0'+flag;
+            ans=char((flag&1)+'0')+ans;
+            flag=flag>>1;
+        }
+        for(int i=len1;i<len2;i++) {
+            flag=b[len2-1-i]-'0'+flag;
+            ans=char((flag&1)+'0')+ans;
+            flag=flag>>1;
+        }
+        if(flag)
+            ans=char('0'+flag)+ans;
+        return ans;
+    }
+};
+
+//Validate Binary Search Tree
+class Solution {
+public:
+    bool isValidBST(TreeNode *root) {
+        return isValid(root,INT_MIN,INT_MAX);
+    }
+    bool isValid(TreeNode *root, int small, int big) {
+        if(root==NULL)
+            return true;
+        if(root->val <= small || root->val >= big)
+            return false;
+        if(root->left!=NULL && root->left->val >= root->val)
+            return false;
+        if(root->right!=NULL && root->right->val <= root->val)
+            return false;
+        return isValid(root->left,small,root->val) && isValid(root->right,root->val,big);
+    }
+};
+
+//Binary Tree Zigzag Level Order Traversal 
+class Solution {
+public:
+    vector<vector<int> > zigzagLevelOrder(TreeNode *root) {
+        vector<vector<int> > ans;
+        if(root==NULL)
+            return ans;
+        vector<int> tmp;
+        vector<TreeNode*> cur;
+        vector<TreeNode*> next;
+        bool reverse=false;
+        cur.push_back(root);
+        while(cur.size()!=0) {
+            if(reverse==false)
+                for(int i=0;i<cur.size();i++)
+                    tmp.push_back(cur[i]->val);
+
+            else 
+                for(int i=cur.size()-1;i>=0;i--) 
+                    tmp.push_back(cur[i]->val);
+            for(int i=0;i<cur.size();i++) {
+                if(cur[i]->left!=NULL)
+                    next.push_back(cur[i]->left);
+                if(cur[i]->right!=NULL)
+                    next.push_back(cur[i]->right);
+            }
+            reverse=!reverse;
+            ans.push_back(tmp);
+            tmp.clear();
+            cur=next;
+            next.clear();
+        }
+        return ans;
+    }
+};
 
 
 
