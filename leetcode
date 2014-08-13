@@ -1756,7 +1756,38 @@ public:
     }
 };
 
-
+//Edit Distance
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int n = word1.length();
+        int m = word2.length();
+        int **matrix = new int*[n+1];
+        for(int i = 0; i <= n; i++)
+            matrix[i] = new int[m+1];
+        for(int i = 0; i <= n; i++)
+            matrix[i][0] = i;
+        for(int j = 0; j <= m; j++)
+            matrix[0][j] = j;
+        
+        for(int i = 1; i <=n; i++) {
+            for(int j = 1; j <= m; j++) {
+                int del = matrix[i-1][j] + 1;
+                int ins = matrix[i][j-1] + 1;
+                int rep = matrix[i-1][j-1];
+                if(word1[i-1] != word2[j-1])
+                    rep++;
+                matrix[i][j] = min(del, ins);
+                matrix[i][j] = min(matrix[i][j], rep);
+            }   
+        }
+        int ans = matrix[n][m];
+        for(int i = 0; i <= n; i++)
+            delete[] matrix[i];
+        delete[] matrix;
+        return ans;
+    }
+};
 
 
 
