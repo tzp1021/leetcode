@@ -1789,5 +1789,30 @@ public:
     }
 };
 
-
+//Gas Station 
+class Solution {
+public:
+    int canCompleteCircuit(vector<int> &gas, vector<int> &cost) {
+        int n = gas.size();
+        int *num = new int[n];
+        for(int i = 0; i < n; i++)
+            num[i] = gas[i] - cost[i];
+        int sum = 0;
+        for(int i = 0; i < n; i++)
+            sum += num[i];
+        if(sum < 0)
+            return -1;
+        sum = 0;
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            sum += num[i];
+            if(sum < 0) {
+                sum = 0;
+                ans = i + 1;
+            }
+        }
+        delete[] num;
+        return ans;
+    }
+};
 
