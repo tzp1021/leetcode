@@ -1862,3 +1862,48 @@ public:
         return ans;
     }
 };
+
+//Generate Parentheses 
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> ans;
+        string cur = "";
+        go(ans, cur, n, n);
+        return ans;
+    }
+    void go(vector<string> &ans, string cur, int nl, int nr) {
+        if(nl < nr) {
+            if(nl != 0) {
+                go(ans, cur + "(", nl-1, nr);
+            }
+            go(ans, cur + ")", nl, nr - 1);
+        }
+        else {
+            if(nl == 0) {
+                ans.push_back(cur);
+                return;
+            }
+            go(ans, cur + "(", nl-1, nr);
+        }
+    }
+};
+
+//Flatten Binary Tree to Linked List 
+class Solution {
+public:
+    void flatten(TreeNode *root) {
+        while ( root ) {
+            if ( root->left ) {
+                TreeNode *ptr = root->left;
+                while ( ptr->right ) ptr = ptr->right;
+                ptr->right = root->right;
+                root->right = root->left;
+                root->left = NULL;
+            }
+            root = root->right;
+        }
+    }
+};
+
+//
