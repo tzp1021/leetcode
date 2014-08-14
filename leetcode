@@ -1816,3 +1816,49 @@ public:
     }
 };
 
+//Roman to Integer 
+class Solution {
+public:
+    int romanToInt(string s) {
+        int n = s.length();
+        if(n < 1) return 0;
+        map<char, int> m;
+        m['I'] = 1;
+        m['V'] = 5;
+        m['X'] = 10;
+        m['L'] = 50;
+        m['C'] = 100;
+        m['D'] = 500;
+        m['M'] = 1000;
+        int i = n - 1;
+        int ans = m[s[i--]];
+        while(i >= 0) {
+            if(m[s[i + 1]] > m[s[i]])
+                ans -= m[s[i--]];
+            else
+                ans += m[s[i--]];
+        }
+        return ans;
+    }
+};
+
+//Integer to Roman 
+class Solution {
+public:
+    string intToRoman(int num) {
+        string hundreds[10] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+        string tens[10] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+        string ones[10] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+        string ans = "";
+        while(num >= 1000) {
+            num -= 1000;
+            ans += "M";
+        }
+        ans += hundreds[num/100];
+        num %= 100;
+        ans += tens[num/10];
+        num %= 10;
+        ans += ones[num];
+        return ans;
+    }
+};
