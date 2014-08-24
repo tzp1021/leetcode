@@ -1277,6 +1277,21 @@ public:
         }
     }
 };
+class Solution {
+public:
+    vector<vector<int> > subsets(vector<int> &S) {
+        sort(S.begin(), S.end());
+        vector<vector<int> > v(1);
+        for(int i = 0; i < S.size(); ++i) {
+            int j = v.size();
+            while(j-- > 0) {
+                v.push_back(v[j]);
+                v.back().push_back(S[i]);
+            }
+        }
+        return v;
+    }
+};
 
 //Search for a Range 
 class Solution {
@@ -1931,6 +1946,60 @@ public:
                     r++;
                 }
                 ans = max(ans, count);
+            }
+        }
+        return ans;
+    }
+};
+
+//Unique Binary Search Trees II 
+class Solution {
+public:
+    vector<TreeNode *> generateTrees(int n) {
+        return createTree(1, n);
+    }
+    vector<TreeNode *> createTree(int l, int r) {
+        vector<TreeNode *> ans;
+        if(l > r) {
+            ans.push_back(NULL);
+            return ans;
+        }
+        for(int k = l; k <= r; k++) {
+            vector<TreeNode *> left = createTree(l, k - 1);
+            vector<TreeNode *> right = createTree(k + 1, r);
+            for(int i = 0; i < left.size(); i++) {
+                for(int j = 0; j < right.size(); j++) {
+                    TreeNode * root = new TreeNode(k);
+                    root->left = left[i];
+                    root->right = right[j];
+                    ans.push_back(root);
+                }
+            }
+        }
+        return ans;
+    }
+    
+};
+
+//Subsets II 
+class Solution {
+public:
+    vector<vector<int> > subsetsWithDup(vector<int> &S) {
+        vector<vector<int> > ans(1);
+        sort(S.begin(), S.end());
+        int oldval = S[0];
+        int oldj = 0;
+        for(int i = 0; i < S.size(); i++) {
+            int temp = oldj;
+            if(S[i] != oldval) {
+                oldval = S[i];
+                temp = 0;
+            }
+            int j = ans.size();
+            oldj = j;
+            while(j-- > temp) {
+                ans.push_back(ans[j]);
+                ans.back().push_back(S[i]);
             }
         }
         return ans;
