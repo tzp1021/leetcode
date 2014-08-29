@@ -2055,4 +2055,26 @@ public:
     }
 };
 
+//Letter Combinations of a Phone Number
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        vector<string> ans;
+		string letter[] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+		go(ans, letter, digits, 0, "");
+        return ans;
+    }
+    void go(vector<string> &ans, string *letter, const string &digits, int k, string cur) {
+		if(k >= digits.length()) {
+            ans.push_back(cur);
+            return;
+        }
+        int num = digits[k] - '0';
+        for(int i = 0; i < letter[num].length(); i++) {
+            string tmp = cur + letter[num][i];
+            go(ans, letter, digits, k + 1, tmp);
+        }
+    }
+};
+
 //
