@@ -2077,4 +2077,37 @@ public:
     }
 };
 
+//Reverse Linked List II 
+class Solution {
+public:
+    ListNode *reverseBetween(ListNode *head, int m, int n) {
+		if(m >= n)
+			return head;
+        ListNode *addition = new ListNode(0);
+        addition->next = head;
+        ListNode *pre_m = addition;
+        for(int i = 0; i < m - 1; i++)
+            pre_m = pre_m->next;
+        ListNode *node_m = pre_m->next;
+        ListNode *pre_p = node_m;
+        ListNode *p = pre_p->next;
+		ListNode *post_p = p->next;
+        for(int i = m; i < n; i++) {
+            p->next = pre_p;
+            pre_p = p;
+            p = post_p;
+			if(post_p != NULL)
+	            post_p = post_p->next;
+        }
+        pre_m->next = pre_p;
+        node_m->next = p;
+        p = addition->next;
+        delete[] addition;
+		if(m > 1)
+	        return head;
+		else 
+			return p;
+    }
+};
+
 //
