@@ -2302,3 +2302,90 @@ public:
 };
 
 //Combination Sum II
+class Solution {
+public:
+    vector<vector<int> > combinationSum2(vector<int> &num, int target) {
+        sort(num.begin(),num.end());
+        vector<vector<int> > ans;
+        vector<int> cur;
+        vector<bool> flags(num.size(), false);
+        go(num,0,target,flags,ans,cur);
+        return ans;
+    }
+    void go(vector<int> &num, int ind, int target, vector<bool> &flags, vector<vector<int> > &ans, vector<int> &cur) {
+        if(target==0) {
+            ans.push_back(cur);
+            return;
+        }
+        int n=num.size();
+        if(ind<n && num[ind]<=target) {
+            if(!(ind > 0 && num[ind] == num[ind-1] && flags[ind-1]==false)) {
+                flags[ind] = true;
+                cur.push_back(num[ind]);
+                go(num,ind+1,target-num[ind],flags,ans,cur);
+                cur.pop_back();
+                flags[ind] = false;
+            }
+            go(num, ind+1, target, flags, ans, cur);
+        }
+    }
+};
+
+//ZigZag Conversion 
+class Solution {
+public:
+    string convert(string s, int nRows) {
+        if(nRows <= 1)
+            return s;
+        string ans = "";
+        for(int i = 0; i < nRows; i++) {
+            int j = i;
+            if(i == 0 || i == nRows-1) {
+                while(j < s.size()) {
+                    ans += s[j];
+                    j += 2 * nRows - 2;
+                }
+            }
+            else {
+                while(j < s.size()) {
+                    ans += s[j];
+                    if(j + 2 * nRows - 2 - 2 * i < s.size())
+                        ans += s[j + 2 * nRows - 2 - 2 * i];
+                    j += 2 * nRows - 2;
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+//3Sum 
+class Solution {
+public:
+    vector<vector<int> > threeSum(vector<int> &num) {
+        sort(num.begin(), num.end());
+        vector<vector<int> > ans;
+        int n = num.size();
+        for(int k = 0; k < n - 2; k++) {
+            if(k > 0 && num[k] == num[k-1])
+                continue;
+            int i = k + 1;
+            int j = n - 1;
+            while(i < j) {
+                while(i > k + 1 && num[i] == num[i-1])
+                    i++;
+                while(i < j && num[i] + num[j] >= -num[k])
+                    j--;
+                if(j < n - 1 && num[i] + num[j+1] == -num[k]) {
+                    vector<int> tmp;
+                    tmp.push_back(num[k]);
+                    tmp.push_back(num[i]);
+                    tmp.push_back(num[j+1]);
+                    ans.push_back(tmp);
+                }
+                i++;
+            }
+        }
+        return ans;
+    }
+};
