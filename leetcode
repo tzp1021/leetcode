@@ -2389,3 +2389,192 @@ public:
         return ans;
     }
 };
+
+//Anagrams
+class Solution {
+public:
+    vector<string> anagrams(vector<string> &strs) {
+        map<string, int> m;
+        vector<string> ans;
+        for(int i = 0; i < strs.size(); i++) {
+            string tmp = strs[i];
+            sort(tmp.begin(), tmp.end());
+            if(m.find(tmp) == m.end()) {
+                m[tmp] = i;
+            }
+            else {
+                if(m[tmp] >= 0) {
+                    ans.push_back(strs[m[tmp]]);
+                    m[tmp] = -1;
+                }
+                ans.push_back(strs[i]);
+            }
+        }
+        return ans;
+    }
+};
+
+//Copy List with Random Pointer
+class Solution {
+public:
+    RandomListNode *copyRandomList(RandomListNode *head) {
+        map<RandomListNode *, int> m;
+        vector<RandomListNode *> v;
+        RandomListNode *p = head;
+        int k = 0;
+        while(p != NULL) {
+            if(m.find(p) != m.end()) {
+                break;
+            }
+            RandomListNode *node = new RandomListNode(p->label);
+            v.push_back(node);
+            m[p] = k;
+            k++;
+            p = p->next;
+        }
+        m[NULL] = k;
+        v.push_back(NULL);
+        p = head;
+        for(int i = 0; i < v.size() - 1; i++) {
+            v[i]->next = v[i+1];
+            v[i]->random = v[m[p->random]];
+            p = p->next;
+        }
+        return v[0];
+    }
+};
+
+//Recover Binary Search Tree
+class Solution {
+public:
+    void recoverTree(TreeNode *root) {
+        TreeNode *big, *small, *front;
+        big = small = front = NULL;
+        go(root, front, big, small);
+        swap(big->val, small->val);
+    }
+    void go(TreeNode *cur, TreeNode *&front, TreeNode *&big, TreeNode *&small) {
+        if(cur->left != NULL)
+            go(cur->left, front, big, small);
+        if(front != NULL && front->val > cur->val) {
+            if(big == NULL)
+                big = front;
+            small = cur;
+        }
+        front = cur;
+        if(cur->right != NULL)
+            go(cur->right, front, big, small);
+    }
+};
+
+//Add Two Numbers
+class Solution {
+public:
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+        ListNode *p1 = l1;
+        ListNode *p2 = l2;
+        ListNode *ans = new ListNode(0);
+        ListNode *p = ans;
+        ListNode *pre_p = NULL;
+        bool flag = false;
+        while(p1 != NULL || p2 != NULL) {
+            if(p1) {
+                p->val += p1->val;
+                p1 = p1->next;
+            }
+            if(p2) {
+                p->val += p2->val;
+                p2 = p2->next;
+            }
+            if(flag)
+                p->val++;
+            flag = false;
+            if(p->val >= 10) {
+                p->val -= 10;
+                flag = true;
+            }
+            if(pre_p)
+                pre_p = pre_p->next;
+            else
+                pre_p = p;
+            ListNode *nextt = new ListNode(0);
+            p->next = nextt;
+            p = p->next;
+        }
+        if(flag)
+            p->val = 1;
+        else {
+            delete[] p;
+            pre_p->next = NULL;
+        }
+        return ans;
+    }
+};
+
+//Valid Palindrome 
+class Solution {
+public:
+    bool is_num(char c) {
+        if(c >= '0' && c <= '9')
+            return true;
+        return false;
+    }
+    bool is_alpha_num(char c) {
+        if(c >= 'a' && c <= 'z')
+            return true;
+        return is_big_alpha(c) || is_num(c);
+    }
+    bool is_big_alpha(char c) {
+        if(c >= 'A' && c <= 'Z')
+            return true;
+        return false;
+    }
+    char lowercase(char c) {
+        if(is_big_alpha(c))
+            return c-'A'+'a';
+        return c;
+    }
+    bool isPalindrome(string s) {
+        int i = 0;
+        int j = s.size() - 1;
+        while(i < j) {
+            while(i < s.size() && !is_alpha_num(s[i]))
+                i++;
+            while(j >= 0 && !is_alpha_num(s[j]))
+                j--;
+            if(i < j && lowercase(s[i]) != lowercase(s[j]))
+                return false;
+            i++;
+            j--;
+        }
+        return true;
+    }
+};
+
+//Clone Graph 
+class Solution {
+public:
+    UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+        map<UndirectedGraphNode *, int> m;
+        vector<UndirectedGraphNode *> v;
+        go(node, m, v, 0);
+        v.push_back(NULL);
+        return v[0];
+    }
+    void go(UndirectedGraphNode *node, map<UndirectedGraphNode *, int> &m, vector<UndirectedGraphNode *> &v, int k) {
+        if(node == NULL)
+            return;
+        m[node] = k;
+        UndirectedGraphNode *c_node = new UndirectedGraphNode(node->label);
+        v.push_back(c_node);
+        for(int i = 0; i < node->neighbors.size(); i++) {
+            if(m.find(node->neighbors[i]) != m.end()) { 
+                c_node->neighbors.push_back(v[m[node->neighbors[i]]]);
+                continue;
+            }
+            go(node->neighbors[i], m, v, k+1);
+            c_node->neighbors.push_back(v[m[node->neighbors[i]]]);
+        }
+    }
+};
+
