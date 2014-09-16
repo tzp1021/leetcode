@@ -2646,4 +2646,42 @@ public:
     }
 };
 
+//Longest Substring Without Repeating Characters
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        set<char> ss;
+        int ans = 0;
+        int i = 0;
+        int j = 0;
+        while(j < s.size()) {
+            while(j < s.size() && ss.find(s[j]) == ss.end()) {
+                ss.insert(s[j]);
+                j++;
+            }
+            ans = max(ans, j - i);
+            ss.erase(s[i]);
+            i++;
+        }
+        return ans;
+    }
+};
+
+//Sqrt(x) 
+class Solution {
+public:
+    int sqrt(int x) {
+        int i = 0;
+        int j = x;
+        while(i <= j) {
+            int mid = (i + j) / 2;
+            if((long long)mid * mid > x)
+                j = mid - 1;
+            else 
+                i = mid + 1;
+        }
+        return j;
+    }
+};
+
 //
