@@ -2734,3 +2734,39 @@ public:
         return ans;
     }
 };
+
+//Rotate List 
+class Solution {
+public:
+    ListNode *rotateRight(ListNode *head, int k) {
+        if(head == NULL)
+            return head;
+        ListNode *p1 = head;
+        int n = 0;
+        while(p1 != NULL) {
+            p1 = p1->next;
+            n++;
+        }
+        k %= n;
+        if(k == 0)
+            return head;
+        ListNode *newHead = new ListNode(0);
+        newHead->next = head;
+        p1 = newHead;
+        ListNode *p2 = newHead;
+        for(int i = 0; i < k; i++)
+            p2 = p2->next;
+        while(p2->next != NULL) {
+            p1 = p1->next;
+            p2 = p2->next;
+        }
+        newHead->next = p1->next;
+        p1->next = NULL;
+        p2->next = head;
+        p1 = newHead->next;
+        delete[] newHead;
+        return p1;
+    }
+};
+
+//
