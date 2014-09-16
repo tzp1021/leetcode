@@ -2684,4 +2684,53 @@ public:
     }
 };
 
-//
+//Best Time to Buy and Sell Stock III 
+class Solution {
+public:
+    int maxProfit(vector<int> &prices) {
+        int n = prices.size();
+        vector<int> pre(n, 0);
+        int tmp = 0;
+        for(int i = 1; i < n; i++) {
+            tmp += prices[i] - prices[i-1];
+            pre[i] = max(pre[i-1], tmp);
+            tmp = max(tmp, 0);
+        }
+        vector<int> post(n, 0);
+        tmp = 0;
+        for(int i = n - 2; i >= 0; i--) {
+            tmp += prices[i+1] - prices[i];
+            post[i] = max(post[i+1], tmp);
+            tmp = max(tmp, 0);
+        }
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            ans = max(ans, pre[i] + post[i]);
+        }
+        return ans;
+    }
+};
+
+//Permutation Sequence 
+class Solution {
+public:
+    string getPermutation(int n, int k) {
+        k--;
+        int jiecheng = 1;
+        for(int i = 2; i < n; i++)
+            jiecheng *= i;
+        vector<char> num;
+        for(int i = 0; i < n; i++)
+            num.push_back(i + '1');
+        string ans = "";
+        for(int i = n - 1; i > 0; i--) {
+            int index = k / jiecheng;
+            k -= index * jiecheng;
+            jiecheng /= i;
+            ans += num[index];
+            num.erase(num.begin() + index);
+        }
+        ans += num[0];
+        return ans;
+    }
+};
