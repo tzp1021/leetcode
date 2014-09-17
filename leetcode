@@ -2769,4 +2769,46 @@ public:
     }
 };
 
+//Implement strStr() 
+class Solution {
+public:
+    char *strStr(char *haystack, char *needle) {
+        int len1 = strlen(haystack);
+        int len2 = strlen(needle);
+        vector<int> next(len2 + 1, 0);
+        get_next(needle, next);
+        int i = 0;
+        int j = 0;
+        while(i < len1 && j < len2) {
+            if(haystack[i] == needle[j]) {
+                i++;
+                j++;
+            }
+            else if(j == 0) {
+                i++;
+            }
+            else {
+                j = next[j-1] + 1;
+            }
+        }
+        if(j == len2) {
+            return haystack + i - j;
+        }
+        return NULL;
+    }
+    void get_next(char *s, vector<int> &next) {
+        int len = strlen(s);
+        next[0] = -1;
+        int j = -1;
+        for(int i = 1; i < len; i++) {
+            while(j >= 0 && s[i] != s[j+1])
+                j = next[j];
+            if(s[i] == s[j+1]) 
+                j = j + 1;
+            next[i] = j;
+        }
+    }
+};
+
 //
+
