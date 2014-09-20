@@ -2884,7 +2884,7 @@ public:
         if(n == 0)
             return 0;
         int m = matrix[0].size();
-        vector<vector<int> > height(n + 1, vector<int>(m, 0));
+        vector<vector<int> > height(n + 1, vector<int>(m + 1, 0));
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < m; j++) {
                 if(matrix[i][j] == '1')
@@ -2895,7 +2895,7 @@ public:
         for(int i = 1; i <= n; i++) {
             stack<int> inc_que_index;
             inc_que_index.push(0);
-            for(int j = 1; j < m; j++) {
+            for(int j = 1; j <= m; j++) {
                 int start = j;
                 while(!inc_que_index.empty() && height[i][j] < height[i][inc_que_index.top()]) {
                     start = inc_que_index.top();
@@ -2907,7 +2907,31 @@ public:
                     height[i][start] = height[i][j];
                 }   
             }
-            ans = max(ans, height[i][inc_que_index.top()] * (m - inc_que_index.top()));
+        }
+        return ans;
+    }
+};
+
+//Largest Rectangle in Histogram 
+class Solution {
+public:
+    int largestRectangleArea(vector<int> &height) {
+        vector<int> v(height);
+        v.push_back(0);
+        stack<int> inc_que_index;
+        inc_que_index.push(0);
+        int ans = 0;
+        for(int i = 1; i < v.size(); i++) {
+            int start = i;
+            while(!inc_que_index.empty() && v[i] < v[inc_que_index.top()]) {
+                start = inc_que_index.top();
+                ans = max(ans, v[start] * (i - start));
+                inc_que_index.pop();
+            }
+            if(inc_que_index.empty() || v[i] > v[inc_que_index.top()]) {
+                inc_que_index.push(start);
+                v[start] = v[i];
+            }
         }
         return ans;
     }
