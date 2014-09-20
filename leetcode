@@ -2840,3 +2840,40 @@ public:
     }
 };
 
+//4Sum 
+class Solution {
+public:
+    vector<vector<int> > fourSum(vector<int> &num, int target) {
+        sort(num.begin(), num.end());
+        vector<vector<int> > ans;
+        int n = num.size();
+        for(int k = 0; k < n - 3; k++) {
+            if(k > 0 && num[k] == num[k-1])
+                continue;
+            for(int kk = k + 1; kk < n - 2; kk++) {
+                if(kk > k + 1 && num[kk] == num[kk-1])
+                    continue;
+                int i = kk + 1;
+                int j = n - 1;
+                while(i < j) {
+                    while(i > kk + 1 && num[i] == num[i-1])
+                        i++;
+                    while(i < j && num[i] + num[j] >= target - num[k] - num[kk])
+                        j--;
+                    if(j < n - 1 && num[i] + num[j+1] == target - num[k] - num[kk]) {
+                        vector<int> tmp;
+                        tmp.push_back(num[k]);
+                        tmp.push_back(num[kk]);
+                        tmp.push_back(num[i]);
+                        tmp.push_back(num[j+1]);
+                        ans.push_back(tmp);
+                    }
+                    i++;
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+//
