@@ -2937,4 +2937,80 @@ public:
     }
 };
 
+//Merge Intervals
+bool cmp(const Interval &a, const Interval &b) {
+    return a.start < b.start;
+}
+class Solution {
+public:
+    vector<Interval> merge(vector<Interval> &intervals) {
+		sort(intervals.begin(), intervals.end(), cmp);
+        vector<Interval> ans;
+        if(intervals.size() == 0)
+            return ans;
+        Interval tmp = intervals[0];
+        for(int i = 1; i < intervals.size(); i++) {
+            if(tmp.end >= intervals[i].start) {
+                tmp.end = max(tmp.end, intervals[i].end);
+                continue;
+            }
+            ans.push_back(tmp);
+            tmp = intervals[i];
+        }
+        ans.push_back(tmp);
+        return ans;
+    }
+};
+
+//Word Break
+class Solution {
+public:
+    bool wordBreak(string s, unordered_set<string> &dict) {
+        unordered_set<string> unmatch;
+        return go(s, dict, unmatch);
+    }
+    bool go(string s, const unordered_set<string> &dict, unordered_set<string> &unmatch) {
+        if(dict.find(s) != dict.end())
+            return true;
+        for(int i = 1; i <= s.size(); i++) {
+            if(dict.find(s.substr(0, i)) != dict.end()) {
+                if(unmatch.find(s.substr(i)) != unmatch.end())
+                    continue;
+                if(go(s.substr(i), dict, unmatch) == false)
+                    unmatch.insert(s.substr(i));
+                else
+                    return true;
+            }
+        }
+        return false;
+    }
+};
+
+//Insert Interval
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval> &intervals, Interval newInterval) {
+        vector<Interval> ans;
+        bool flag = false;
+        for(int i = 0; i < intervals.size(); i++) {
+            if(newInterval.start > intervals[i].end)
+                ans.push_back(intervals[i]);
+            else if(newInterval.end < intervals[i].start) {
+                if(flag == false) {
+                    ans.push_back(newInterval);
+                    flag = true;
+                }
+                ans.push_back(intervals[i]);
+            }
+            else if(newInterval.end >= intervals[i].start) {
+                newInterval.start = min(newInterval.start, intervals[i].start);
+                newInterval.end = max(newInterval.end, intervals[i].end);
+            }
+        }
+        if(flag == false)
+            ans.push_back(newInterval);
+        return ans;
+    }
+};
+
 //
