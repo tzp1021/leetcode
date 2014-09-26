@@ -3013,4 +3013,78 @@ public:
     }
 };
 
-//
+//Spiral Matrix 
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int> > &matrix) {
+        vector<int> ans;
+        if(matrix.empty())
+            return ans;
+        int endM = matrix.size() - 1;
+        int endN = matrix[0].size() - 1;
+        int startM = 0;
+        int startN = 0;
+        while(true) {
+            for(int i = startN; i <= endN; i++)
+                ans.push_back(matrix[startM][i]);
+            if(++startM > endM)
+                break;
+            for(int i = startM; i <= endM; i++)
+                ans.push_back(matrix[i][endN]);
+            if(--endN < startN)
+                break;
+            for(int i = endN; i >= startN; i--)
+                ans.push_back(matrix[endM][i]);
+            if(--endM < startM)
+                break;
+            for(int i = endM; i >= startM; i--)
+                ans.push_back(matrix[i][startN]);
+            if(++startN > endN)
+                break;
+        }
+        return ans;
+    }
+};
+
+//Sort List
+class Solution {
+public:
+    ListNode *sortList(ListNode *head) {
+        if(head == NULL)
+            return NULL;
+        int len = 1;
+        for(ListNode *p = head->next; p != NULL && p != head; p = p->next)
+            len++;
+        return mergeSortList(head, len);
+    }
+    ListNode *mergeSortList(ListNode *head, int len) {
+        if(len <= 1)
+            return head;
+        int len1 = len >> 1;
+        ListNode *p = head;
+        for(int i = 0; i < len1; i++)
+            p = p->next;
+        ListNode *p1 = mergeSortList(head, len1);
+        ListNode *p2 = mergeSortList(p, len - len1);
+        ListNode *new_head = new ListNode(0);
+        p = new_head;
+        for(int i = 0, j = 0; i < len1 || j < len - len1;) {
+            if(j < len - len1 && (i == len1 || p1->val > p2->val)) {
+                p->next = p2;
+				p = p->next;
+                p2 = p2->next;
+                j++;
+            }
+            if(i < len1 && (j == len - len1 || p1->val <= p2->val)) {
+                p->next = p1;
+				p = p->next;
+                p1 = p1->next;
+                i++;
+            }
+        }
+		p->next = NULL;
+        p = new_head->next;
+        delete[] new_head;
+        return p;
+    }
+};
