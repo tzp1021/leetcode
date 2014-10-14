@@ -3174,3 +3174,31 @@ private:
     }
 };
 
+//Reverse Words in a String
+class Solution {
+public:
+    void reverseWords(string &s) {
+        stack<string> word_stack;
+        string word = "";
+        s += ' ';
+        for(int i = 0; i < s.length(); i++) {
+            if(s[i] == ' ') {
+                if(word != "")
+                    word_stack.push(word);
+                word = "";
+            }
+            else
+                word += s[i];
+        }
+        string ans = "";
+        while(!word_stack.empty()) {
+            if(ans != "")
+                ans += " ";
+            ans += word_stack.top();
+            word_stack.pop();
+        }
+        s = ans;
+    }
+};
+
+//
