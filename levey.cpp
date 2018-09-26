@@ -132,4 +132,55 @@ public:
         return -1;
     }
 };
+//===========================Longest Palindromic Substring============================//
+class Solution {
+public:
+    string preProcess(string s) {
+        int len = (int)s.length();
+        if(len == 0)
+            return "^$";
+        string ret = "^";
+        for(int i = 0; i < len; i++) {
+            ret += "#" + s.substr(i, 1);
+        }
+        ret += "#$";
+        return ret;
+    }
+    
+    string longestPalindrome(string s) {
+        string str = preProcess(s);
+        int len = (int)str.length();
+        int max_pos = 0;
+        int max_pos_right = 0;
+        int* radius = new int[len];
+        memset(radius, 0, len);
+        
+        for(int i = 1; i < len - 1; i++) {
+            int i_mirror = 2 * max_pos - i;
+            radius[i] = (max_pos_right > i) ? min(max_pos_right - i, radius[i_mirror]) : 0;
+            
+            while (str[i + 1 + radius[i]] == str[i - 1 - radius[i]]) {
+                radius[i]++;
+            }
+            
+            if(i + radius[i] > max_pos_right) {
+                max_pos_right = i + radius[i];
+                max_pos = i;
+            }
+        }
+        
+        int ans_pos = 0;
+        int ans_radius = 0;
+        for(int i = 0; i < len - 1; i++) {
+            if(radius[i] > ans_radius) {
+                ans_pos = i;
+                ans_radius = radius[i];
+            }
+        }
+        
+        delete[] radius;
+        
+        return s.substr((ans_pos - 1 - ans_radius) / 2, ans_radius);
+    }
+};
 //===========================Distinct Subsequences============================//
