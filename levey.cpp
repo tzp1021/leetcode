@@ -213,4 +213,38 @@ public:
         return -1;
     }
 };
+//===========================Kth Largest Element in an Array============================//
+class Solution {
+public:
+    int findKthLargest(vector<int>& nums, int k) {
+        if(k > nums.size())
+            return -1;
+        return findKthMin(nums, 0, (int)nums.size() - 1, (int)nums.size() - k);
+    }
+    
+    int findKthMin(vector<int>& nums, int start, int end, int k) {
+        if(start > end)
+            return 0;
+        
+        int i = start + 1, j = end;
+        while(i <= j) {
+            while(i <= j && nums[i] <= nums[start])
+                i++;
+            while (i <= j && nums[j] >= nums[start])
+                j--;
+            if(i < j)
+                swap(nums[i++], nums[j--]);
+        }
+        swap(nums[start], nums[j]);
+        
+        if(j > k)
+            return findKthMin(nums, start, j - 1, k);
+        else if(j < k)
+            return findKthMin(nums, j + 1, end, k);
+        else
+            return nums[j];
+        
+        return 0;
+    }
+};
 //===========================Distinct Subsequences============================//
