@@ -210,7 +210,7 @@ public:
                 return (max(l1, l2) + min(r1, r2)) / 2.0;
             }
         }
-        return 0;
+        return -1;
     }
 };
 //===========================Distinct Subsequences============================//
