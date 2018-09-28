@@ -274,4 +274,30 @@ public:
         return ret;
     }
 };
-//===========================79. Word Search============================//
+//===========================8. String to Integer (atoi)============================//
+class Solution {
+public:
+    int myAtoi(string str) {
+        if(str.empty())
+            return 0;
+        int idx = 0, sign = 1;
+        long long ret = 0;
+        while(idx < str.length() && str[idx] == ' ')
+            idx++;
+        if(str[idx] == '-' || str[idx] == '+') {
+            sign = (str[idx] == '-') ? -1 : 1;
+            idx++;
+        }
+        while(idx < str.length() && str[idx] >= '0' && str[idx] <= '9') {
+            ret = ret * 10 + str[idx] - '0';
+            if(ret * sign >= INT_MAX) {
+                return INT_MAX;
+            } else if (ret * sign <= INT_MIN) {
+                return INT_MIN;
+            }
+            idx++;
+        }
+        return (int)ret * sign;
+    }
+};
+//===========================8. String to Integer (atoi)============================//
