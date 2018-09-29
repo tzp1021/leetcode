@@ -363,8 +363,8 @@ public:
         if(wordDict.find(endWord) == wordDict.end())
             return 0;
         queue<string> toVisit;
-        addNextWord(beginWord, wordDict, toVisit);
-        int ret = 2;
+        toVisit.push(beginWord);
+        int ret = 1;
         while(!toVisit.empty()) {
             for(int i = (int)toVisit.size(); i > 0; i--) {
                 string word = toVisit.front();
@@ -379,7 +379,6 @@ public:
         return 0;
     }
     void addNextWord(string word, unordered_set<string>& wordDict, queue<string>& toVisit) {
-        wordDict.erase(word);
         for(int i = 0; i < word.length(); i++) {
             char letter = word[i];
             for(int j = 0; j < 26; j++) {
