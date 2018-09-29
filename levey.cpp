@@ -300,4 +300,26 @@ public:
         return (int)ret * sign;
     }
 };
-//===========================8. String to Integer (atoi)============================//
+//===========================32. Longest Valid Parentheses============================//
+class Solution {
+public:
+    int longestValidParentheses(string s) {
+        vector<int> stack;
+        int ret = 0, start = -1;
+        for(int i = 0; i < s.length(); i++) {
+            if(s[i] == '(')
+                stack.push_back(i);
+            if(s[i] == ')') {
+                if(stack.empty()) {
+                    start = i;
+                }
+                else {
+                    stack.pop_back();
+                    ret = (stack.empty()) ? max(ret, i - start) : max(ret, i - stack.back());
+                }
+            }
+        }
+        return ret;
+    }
+};
+//===========================32. Longest Valid Parentheses============================//
