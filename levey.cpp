@@ -322,4 +322,37 @@ public:
         return ret;
     }
 };
-//===========================32. Longest Valid Parentheses============================//
+//===========================29. Divide Two Integers============================//
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        if(divisor == 0 || dividend == 0)
+            return 0;
+        if(dividend == INT_MIN && divisor == -1)
+            return INT_MAX;
+        bool is_minus = (dividend < 0) ^ (divisor < 0);
+        int ret = 0;
+        int bits = 0;
+        dividend = (dividend > 0) ? dividend : -dividend;
+        divisor = (divisor > 0) ? divisor: -divisor;
+        while(divisor > dividend && divisor >= 0xc0000000) {
+            bits++;
+            divisor <<= 1;
+        }
+        if(divisor < dividend) {
+            bits--;
+            divisor >>= 1;
+        }
+        while(dividend != 0 && bits >= 0) {
+            if(dividend <= divisor) {
+                dividend -= divisor;
+                ret += 1 << bits;
+            }
+            divisor >>= 1;
+            bits--;
+        }
+        ret = is_minus ? -ret: ret;
+        return ret;
+    }
+};
+//===========================29. Divide Two Integers============================//
