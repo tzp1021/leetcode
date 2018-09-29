@@ -393,4 +393,55 @@ public:
         }
     }
 };
-//===========================127. Word Ladder============================//
+//===========================126. Word Ladder II============================//
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        vector<vector<string>> ret;
+        unordered_set<string> wordDict(wordList.begin(), wordList.end());
+        if(wordDict.find(endWord) == wordDict.end())
+            return ret;
+        queue<vector<string>> toVisit;
+        queue<string> toErase;
+        vector<string> beginPath;
+        beginPath.push_back(beginWord);
+        toVisit.push(beginPath);
+        bool isFound = false;
+        while(!toVisit.empty() && !isFound) {
+            for(int i = (int)toVisit.size(); i > 0; i--) {
+                vector<string> path = toVisit.front();
+                string word = path.back();
+                toVisit.pop();
+                if(word == endWord) {
+                    ret.push_back(path);
+                    isFound = true;
+                }
+                addNextPath(path, wordDict, toVisit, toErase);
+            }
+            for(int i = (int)toErase.size(); i > 0; i--) {
+                string word = toErase.front();
+                toErase.pop();
+                wordDict.erase(word);
+            }
+        }
+        return ret;
+    }
+    
+    void addNextPath(vector<string>& path, unordered_set<string>& wordDict, queue<vector<string>>& toVisit, queue<string>& toErase) {
+        string word = path.back();
+        for(int i = 0; i < word.length(); i++) {
+            char letter = word[i];
+            for(int j = 0; j < 26; j++) {
+                word[i] = 'a' + j;
+                if(wordDict.find(word) != wordDict.end()) {
+                    vector<string> new_path = path;
+                    new_path.push_back(word);
+                    toVisit.push(new_path);
+                    toErase.push(word);
+                }
+            }
+            word[i] = letter;
+        }
+    }
+};
+//===========================126. Word Ladder II============================//
