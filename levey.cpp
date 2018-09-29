@@ -355,4 +355,42 @@ public:
         return ret;
     }
 };
-//===========================29. Divide Two Integers============================//
+//===========================127. Word Ladder============================//
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        unordered_set<string> wordDict(wordList.begin(), wordList.end());
+        if(wordDict.find(endWord) == wordDict.end())
+            return 0;
+        queue<string> toVisit;
+        addNextWord(beginWord, wordDict, toVisit);
+        int ret = 2;
+        while(!toVisit.empty()) {
+            for(int i = (int)toVisit.size(); i > 0; i--) {
+                string word = toVisit.front();
+                toVisit.pop();
+                if(word == endWord)
+                    return ret;
+                addNextWord(word, wordDict, toVisit);
+            }
+            ret++;
+        }
+        
+        return 0;
+    }
+    void addNextWord(string word, unordered_set<string>& wordDict, queue<string>& toVisit) {
+        wordDict.erase(word);
+        for(int i = 0; i < word.length(); i++) {
+            char letter = word[i];
+            for(int j = 0; j < 26; j++) {
+                word[i] = 'a' + j;
+                if(wordDict.find(word) != wordDict.end()) {
+                    toVisit.push(word);
+                    wordDict.erase(word);
+                }
+            }
+            word[i] = letter;
+        }
+    }
+};
+//===========================127. Word Ladder============================//
