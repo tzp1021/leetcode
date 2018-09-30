@@ -443,4 +443,53 @@ public:
         }
     }
 };
-//===========================126. Word Ladder II============================//
+//===========================146. LRU Cache============================//
+struct Node {
+    Node(int key_, int value_) {
+        key = key_;
+        value = value_;
+    }
+    int key;
+    int value;
+};
+class LRUCache {
+public:
+    LRUCache(int capacity) : SIZE(capacity) {
+    }
+    
+    int get(int key) {
+        auto ret = map_.find(key);
+        if(ret != map_.cend()) {
+            moveToHead(ret->second);
+            return ret->second->value;
+        }
+        return -1;
+    }
+    
+    void put(int key, int value) {
+        auto ret = map_.find(key);
+        if(ret == map_.cend()) {
+            list_.emplace_front(key, value);
+            map_[key] = list_.begin();
+            if(list_.size() > SIZE) {
+                auto remove = list_.back();
+                map_.erase(remove.key);
+                list_.pop_back();
+            }
+        } else {
+            moveToHead(ret->second);
+            list_.front().value = value;
+        }
+    }
+    
+    void moveToHead(std::list<Node>::iterator node) {
+        list_.emplace_front(node->key, node->value);
+        map_[node->key] = list_.begin();
+        list_.erase(node);
+    }
+private:
+    list<Node> list_;
+    unordered_map<int, decltype(list_)::iterator> map_;
+    int SIZE;
+};
+//===========================146. LRU Cache============================//
