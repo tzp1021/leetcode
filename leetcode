@@ -19,7 +19,9 @@ public:
         go(root,0,max_depth);
         return max_depth;
     }
-    void go(TreeNode *node,int depth, int &max_depth) {
+    // void go(const TreeNode *node, int depth, int &max_depth) const { ...能用const的时候记得用const
+    // 然后，这里max_depth其实可以作为类的成员变量，不过这个没什么所谓。
+    void go(TreeNode *node,int depth, int &max_depth) {  
         if(node!=NULL) {
             depth++;
             if(depth>max_depth)
@@ -42,6 +44,9 @@ public:
             if(node1->val!=node2->val)
                 return false;
             else
+                // 一行尽量不要太长，可以拆成两行：
+                // return isSameTree(node1->left, node2->left) &&
+                //        isSameTree(node1->right, node2->right);
                 return isSameTree(node1->left,node2->left) && isSameTree(node1->right,node2->right);
         }
         return true;
@@ -65,7 +70,7 @@ public:
 class Solution {
 public:
     int maxProfit(vector<int> &prices) {
-        int n=prices.size();
+        int n=prices.size();     // 用const int n = prices.size()应该会有印象分吧，虽然很蛋疼，反正能用const就用const，能用stl的就用stl。
         if(n==0)
             return 0;
         int buy=prices[0];
@@ -83,7 +88,7 @@ public:
 class Solution {
 public:
     bool hasCycle(ListNode *head) {
-        ListNode* one=head;
+        ListNode* one=head;   // 取直观一点的命名吧。
         ListNode* two=head;
         while(two!=NULL) {
             if(one->next!=NULL)
@@ -161,7 +166,7 @@ public:
             if(head->val==head->next->val) {
                 ListNode* tmp=head->next;
                 head->next=tmp->next;
-                delete(tmp);
+                delete(tmp);   // Nice! 一定要记得delete内存。
             }
             else
                 head=head->next;
@@ -176,9 +181,13 @@ public:
     vector<int> inorderTraversal(TreeNode *root) {
         vector<int> ans;
         if(root!=NULL)
+            // inorderTravel(root, &ans);
             inorderTravel(root,ans);
         return ans;
     }
+    // 如果一个变量表示输出，或者会有改动时，一般是传指针，但没必要专门去new一个，用&取地址就可以了，见上面几行的注释。
+    // 另，用引用时，一般都是带const的,const A&，表示不会改变，如果会改变的话，传指针，这样人家一看就知道这个变量可能会有改动了。
+    // void inorderTravel(const TreeNode *node, vector<int>* v) {...
     void inorderTravel(TreeNode *node, vector<int> &v) {
         if(node->left!=NULL)
             inorderTravel(node->left,v);
@@ -210,7 +219,7 @@ public:
 class Solution {
 public:
     int climbStairs(int n) {
-        int a[2]={1,1},k;
+        int a[2]={1,1},k;   // 分开写吧，这样看着好蛋碎。
         for(k=2;k<=n;k++) {
             a[k%2]=a[0]+a[1];
         }
@@ -290,6 +299,9 @@ public:
             return false;
         if(node1->val!=node2->val)
             return false;
+        // 一般会这样写
+        // reutrn isSame(.......) &&
+        //        isSame(.....);
         return isSame(node1->left,node2->right) 
             && isSame(node1->right, node2->left);
     }
@@ -340,13 +352,14 @@ public:
 class Solution {
 public:
     TreeNode *sortedArrayToBST(vector<int> &num) {
-        int n=num.size();
+        int n=num.size();    //const int n = ...;
         if(n==0) 
             return NULL;
         TreeNode *root=new TreeNode(0);
         construct(num,0,n-1,root);
         return root;
     }
+    // num前面可以加const  const vector<int> &num,
     void construct(vector<int> &num, int i, int j, TreeNode *node) {
         int mid=(i+j)/2;
         node->val=num[mid];
