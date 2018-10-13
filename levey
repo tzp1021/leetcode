@@ -545,3 +545,36 @@ private:
         }
     }
 };
+//===========================135. Candy============================//
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        if(ratings.size() == 0)
+            return 0;
+        int ret = 1;
+        int idx = 0;
+        int idx_num = 1;
+        int last_num = 1;
+        for(int i = 1; i < ratings.size(); i++) {
+            if(ratings[i] > ratings[i-1]) {
+                idx = i;
+                last_num++;
+                idx_num = last_num;
+                ret += last_num;
+            } else if(ratings[i] < ratings[i-1]) {
+                last_num = 1;
+                if(idx_num >= i - idx + 1) {
+                    ret += i - idx;
+                } else {
+                    ret += i - idx + 1;
+                }
+            } else {
+                idx = i;
+                last_num = 1;
+                idx_num = 1;
+                ret += 1;
+            }
+        }
+        return ret;
+    }
+};
