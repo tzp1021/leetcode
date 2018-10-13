@@ -492,4 +492,56 @@ private:
     unordered_map<int, decltype(list_)::iterator> map_;
     int SIZE;
 };
-//===========================146. LRU Cache============================//
+//===========================202. Happy Number============================//
+class Solution {
+public:
+    bool isHappy(int n) {
+        while(true) {
+            if(_set.find(n) != _set.end())
+                break;
+            _set.insert(n);
+            int sum = 0;
+            while(n) {
+                int tmp = n % 10;
+                sum += tmp * tmp;
+                n /= 10;
+            }
+            if(sum == 1)
+                return true;
+            n = sum;
+        }
+        return false;
+    }
+private:
+    set<int> _set;
+};
+//===========================216. Combination Sum III============================//
+class Solution {
+public:
+    vector<vector<int>> combinationSum3(int k, int n) {
+        vector<vector<int>> ans;
+        for(int i = 1; i <= 9; i++) {
+            vector<int> vec;
+            vec.push_back(i);
+            combinationSum3(k-1, n-i, vec, ans);
+            vec.pop_back();
+        }
+        return ans;
+    }
+    
+private:
+    void combinationSum3(int k, int n, vector<int> &vec, vector<vector<int>> &ans) {
+        if(k == 0 && n == 0) {
+            ans.push_back(vec);
+            return;
+        }
+        if(k == 0 || n == 0) {
+            return;
+        }
+        for(int i = vec.back() + 1; i <= 9; i++) {
+            vec.push_back(i);
+            combinationSum3(k-1, n-i, vec, ans);
+            vec.pop_back();
+        }
+    }
+};
