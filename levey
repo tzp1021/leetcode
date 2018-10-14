@@ -578,3 +578,242 @@ public:
         return ret;
     }
 };
+//===========================143. Reorder List============================//
+class Solution {
+public:
+    void reorderList(ListNode* head) {
+        if(head == NULL)
+            return;
+        vector<ListNode*> vec;
+        vec.push_back(head);
+        while(head->next != NULL) {
+            head = head->next;
+            vec.push_back(head);
+        }
+        int i = 0;
+        int j = vec.size() - 1;
+        bool flag = true;
+        while(i < j) {
+            if(flag)
+                vec[i++]->next = vec[j];
+            else
+                vec[j--]->next = vec[i];
+            flag = !flag;
+        }
+        vec[j]->next = NULL;
+    }
+};
+//130. Surrounded Regions
+class Solution {
+public:
+    void solve(vector<vector<char>>& board) {
+        if(board.size() == 0)
+            return;
+        int m = (int)board.size();
+        int n = (int)board[0].size();
+        bool* flags = new bool[m * n];
+        memset(flags, 0, m * n);
+        for(int i = 0; i < m; i++) {
+            for(int j = 0; j < n; j++) {
+                if(board[i][j] == 'O' && !flags[i * n + j]) {
+                    bfs(i, j, board, flags);
+                }
+            }
+        }
+        delete [] flags;
+    }
+private:
+    void bfs(int i, int j, vector<vector<char>>& board, bool flags[]) {
+        int m = (int)board.size();
+        int n = (int)board[0].size();
+        vector<pair<int, int>> vec;
+        vec.emplace_back(i, j);
+        queue<pair<int,int>> q;
+        q.emplace(i, j);
+        flags[i * n + j] = false;
+        bool isChange = true;
+        int xx[] = {0, 0, -1, 1};
+        int yy[] = {-1, 1, 0, 0};
+        while(!q.empty()) {
+            pair<int, int> p = q.front();
+            q.pop();
+            if(p.first == 0 || p.first == m - 1 || p.second == 0 || p.second == n - 1)
+                isChange = false;
+            for(int k = 0; k < 4; k++) {
+                int ii = p.first + xx[k];
+                int jj = p.second + yy[k];
+                if(ii >= 0 && ii < m && jj >= 0 && jj < n && board[ii][jj] == 'O'
+                   && !flags[ii * n + jj]) {
+                    flags[ii * n + jj] = true;
+                    vec.emplace_back(ii, jj);
+                    q.emplace(ii, jj);
+                }
+            }
+        }
+        if(isChange) {
+            for(int ii = 0; ii < vec.size(); ii++) {
+                pair<int, int> p = vec[ii];
+                board[p.first][p.second] = 'X';
+            }
+        }
+    }
+};
+//132. Palindrome Partitioning II
+class Solution {
+public:
+    int minCut(string s) {
+        int n = (int)s.size();
+        vector<int> dp(n, INT_MAX);
+        vector<vector<bool>> isPalindrome(n, vector<bool>(n, false));
+        dp[0] = 0;
+        for(int i = 1; i < n; i++) {
+            for(int j = 0; j <= i; j++) {
+                if((i - j < 2 || isPalindrome[i-1][j+1]) && s[i] == s[j]) {
+                    isPalindrome[i][j] = true;
+                    dp[i] = min(dp[i], j == 0 ? 0 : dp[j - 1] + 1);
+                }
+            }
+        }
+        return dp[n - 1];
+    }
+};
+//149. Max Points on a Line
+class Solution {
+public:
+    int maxPoints(vector<Point>& points) {
+        map<pair<int,int>, int> slopes;
+        int ret = 0;
+        int n = (int)points.size();
+        for(int i = 0; i < n; i++) {
+            slopes.clear();
+            int duplicates = 1;
+            for(int j = i + 1; j < n; j++) {
+                if(points[i].x == points[j].x && points[i].y == points[j].y) {
+                    duplicates++;
+                    continue;
+                }
+                int dx = points[i].x - points[j].x;
+                int dy = points[i].y - points[j].y;
+                int g = gcd(dx, dy);
+                slopes[make_pair(dx / g, dy / g)]++;
+            }
+            ret = max(ret, duplicates);
+            for(auto slope : slopes) {
+                ret = max(ret, slope.second + duplicates);
+            }
+        }
+        return ret;
+    }
+private:
+    int gcd(int a, int b) {
+        while(b) {
+            int tmp = b;
+            b = a % b;
+            a = tmp;
+        }
+        return a;
+    }
+};
+//150. Evaluate Reverse Polish Notation
+class Solution {
+public:
+    int evalRPN(vector<string>& tokens) {
+        if(tokens.size() == 0)
+            return 0;
+        vector<int> vec;
+        for(int i = 0; i < tokens.size(); i++) {
+            if(tokens[i] == "+" || tokens[i] == "-" || tokens[i] == "*" || tokens[i] == "/") {
+                int b = vec.back();
+                vec.pop_back();
+                int a = vec.back();
+                vec.pop_back();
+                if(tokens[i] == "+")
+                    vec.emplace_back(a + b);
+                if(tokens[i] == "-")
+                    vec.emplace_back(a - b);
+                if(tokens[i] == "*")
+                    vec.emplace_back(a * b);
+                if(tokens[i] == "/")
+                    vec.emplace_back(a / b);
+            } else {
+                vec.emplace_back(atoi(tokens[i].c_str()));
+            }
+        }
+        return vec.back();
+    }
+};
+
+//139. Word Break
+class Solution {
+public:
+    //40ms
+    bool wordBreak(string s, unordered_set<string> &dict) {
+        unordered_set<string> unmatch;
+        return go(s, dict, unmatch);
+    }
+    bool go(string s, const unordered_set<string> &dict, unordered_set<string> &unmatch) {
+        if(dict.find(s) != dict.end())
+            return true;
+        for(int i = 1; i <= s.size(); i++) {
+            if(dict.find(s.substr(0, i)) != dict.end()) {
+                if(unmatch.find(s.substr(i)) != unmatch.end())
+                    continue;
+                if(go(s.substr(i), dict, unmatch) == false)
+                    unmatch.insert(s.substr(i));
+                else
+                    return true;
+            }
+        }
+        return false;
+    }
+    //4ms
+    bool wordBreak(string s, vector<string>& wordDict) {
+        int len = (int)s.length();
+        vector<bool> vec(len, false);
+        for(int i = 0; i < len; i++) {
+            for(int j = 0; j < wordDict.size(); j++) {
+                string word = wordDict[j];
+                int n = (int)wordDict[j].length();
+                string str;
+                if(i + 1 >= n)
+                    str = s.substr(i + 1 - n, n);
+                if(i + 1 >= n && s.substr(i + 1 - n, n) == wordDict[j]) {
+                    if(i - n < 0 || vec[i-n])
+                        vec[i] = true;
+                }
+            }
+        }
+        bool ret = vec[len - 1];
+        return vec[len - 1];
+    }
+};
+//140. Word Break II
+class Solution {
+public:
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        int len = (int)s.length();
+        vector<vector<int>> vec(len);
+        for(int i = 0; i < len; i++) {
+            for(int j = 0; j < wordDict.size(); j++) {
+                int n = (int)wordDict[j].length();
+                if(i + 1 >= n && s.substr(i + 1 - n, n) == wordDict[j]
+                   && (i - n < 0 || !vec[i - n].empty())) {
+                    vec[i].emplace_back(i-n);
+                }
+            }
+        }
+        vector<string> ret;
+        dfs(vec, s, len - 1, "", ret);
+        return ret;
+    }
+private:
+    void dfs(vector<vector<int>>& vec, string& s, int n, string str, vector<string>& ret) {
+        if(n == -1) {
+            ret.emplace_back(str.substr(0, str.length() - 1));
+            return;
+        }
+        for(int i = 0; i < vec[n].size(); i++) {
+            dfs(vec, s, vec[n][i], s.substr(vec[n][i] + 1, n - vec[n][i]) + ' ' + str, ret);
+        }
+    }
+};
