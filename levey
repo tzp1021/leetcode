@@ -817,3 +817,211 @@ private:
         }
     }
 };
+//91. Decode Ways
+class Solution {
+public:
+    int numDecodings(string s) {
+        if(s.empty())
+            return 0;
+        int n = (int)s.length();
+        vector<int> dp(n, 0);
+        for(int i = 0; i < n; i++) {
+            if(s[i] >= '1' && s[i] <= '9')
+                dp[i] = i >= 1 ? dp[i - 1] : 1;
+            if(i >= 1 && (s[i - 1] == '1' || (s[i-1] == '2' && s[i] <= '6'))) {
+                dp[i] += i >= 2 ? dp[i - 2] : 1;
+            }
+        }
+        return dp[n-1];
+    }
+};
+//44. Wildcard Matching
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int len1 = (int)s.length();
+        int len2 = (int)p.length();
+        vector<vector<bool>> dp(len1 + 1, vector<bool>(len2 + 1, false));
+        dp[0][0] = true;
+        for(int j = 1; j <= len2; j++) {
+            if(p[j - 1] == '*' && dp[0][j-1])
+                dp[0][j] = true;
+        }
+        for(int i = 1; i <= len1; i++) {
+            for(int j = 1; j <= len2; j++) {
+                if(p[j - 1] == '*') {
+                    dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+                } else if(p[j - 1] == '?' || p[j - 1] == s[i - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+            }
+        }
+        return dp[len1][len2];
+    }
+};
+//10. Regular Expression Matching
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int len1 = (int)s.length();
+        int len2 = (int)p.length();
+        vector<vector<bool>> dp(len1 + 1, vector<bool>(len2 + 1, false));
+        dp[0][0] = true;
+        for(int j = 1; j <= len2; j++) {
+            if(j >= 2 && p[j - 1] == '*' && dp[0][j-2])
+                dp[0][j] = true;
+        }
+        for(int i = 1; i <= len1; i++) {
+            for(int j = 1; j <= len2; j++) {
+                if(j >= 2 && p[j - 1] == '*') {
+                    dp[i][j] = dp[i][j - 2];
+                    if(p[j - 2] == '.' || p[j - 2] == s[i - 1]) {
+                        dp[i][j] = dp[i][j] || dp[i -1][j];
+                    }
+                } else if(p[j - 1] == '.' || p[j - 1] == s[i - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+            }
+        }
+        return dp[len1][len2];
+    }
+};
+//43. Multiply Strings
+class Solution {
+public:
+    string multiply(string num1, string num2) {
+        int len1 = (int)num1.length();
+        int len2 = (int)num2.length();
+        vector<int> vec(len1 + len2, 0);
+        for(int i = 0; i < len1; i++) {
+            for(int j = 0; j < len2; j++) {
+                int idx = i + j;
+                vec[idx] += (num1[len1 - i - 1] - '0') * (num2[len2 - j - 1] - '0');
+                while(vec[idx] >= 10) {
+                    vec[idx+1] += vec[idx] / 10;
+                    vec[idx] %= 10;
+                    idx++;
+                }
+            }
+        }
+        string ret;
+        int k = len1 + len2 - 1;
+        while(k > 0 && vec[k] == 0)
+            k--;
+        while(k >= 0)
+            ret += '0' + vec[k--];
+        return ret;
+    }
+};
+//30. Substring with Concatenation of All Words
+class Solution {
+public:
+    vector<int> findSubstring(string S, vector<string> &L) {
+        vector<int> ret;
+        if(S.length() == 0 || L.size() == 0 || L[0].length() == 0)
+            return ret;
+        int wordCount = (int)L.size();
+        int wordLen = (int)L[0].length();
+        int len = (int)S.length();
+        unordered_map<string, queue<int>> wordHash;
+        unordered_map<string, queue<int>>::iterator it;
+        for(string str : L)
+            wordHash[str].emplace(-1);
+        for(int start = 0; start < wordLen; start++) {
+            unordered_map<string, queue<int>> tmpWordHash = wordHash;
+            int curCount = 0;
+            for(int i = start; i < len; i += wordLen) {
+                it = tmpWordHash.find(S.substr(i, wordLen));
+                if(it == tmpWordHash.end()) {
+                    curCount = 0;
+                    continue;
+                }
+                int last_pos = it->second.front();
+                if(last_pos == -1 || (i - last_pos) > curCount * wordLen)
+                    curCount++;
+                else
+                    curCount = (i - last_pos) / wordLen;
+                it->second.pop();
+                it->second.emplace(i);
+                if(curCount == wordCount)
+                    ret.emplace_back(i - (wordCount - 1) * wordLen);
+            }
+        }
+        return ret;
+    }
+};
+//68. Text Justification
+class Solution {
+public:
+    vector<string> fullJustify(vector<string>& words, int maxWidth) {
+        vector<string> vec;
+        vector<string> curLine;
+        int curLineWidth = 0;
+        for(int i = 0; i <= words.size(); i++) {
+            if(i == words.size()) {
+                string str;
+                if(!curLine.empty())
+                    str = curLine[0];
+                for(int j = 1; j < curLine.size(); j++) {
+                    str += ' ' + curLine[j];
+                }
+                for(size_t j = maxWidth - curLineWidth - curLine.size() + 1; j > 0; j--) {
+                    str += ' ';
+                }
+                vec.emplace_back(str);
+                break;
+            }
+            if(curLineWidth + words[i].length() + curLine.size() > maxWidth) {
+                int space_width = curLine.size() == 1 ? maxWidth - curLineWidth : (maxWidth - curLineWidth) / (curLine.size() - 1);
+                int mod = curLine.size() == 1 ? 0 : (maxWidth - curLineWidth) % (curLine.size() - 1);
+                string str = curLine[0];
+                for(int j = 1; j < curLine.size(); j++) {
+                    for(int i = 0; i < space_width; i++)
+                        str += ' ';
+                    if(mod > 0) {
+                        str += ' ';
+                        mod--;
+                    }
+                    str += curLine[j];
+                }
+                if(curLine.size() == 1) {
+                    for(int i = 0; i < space_width; i++)
+                        str += ' ';
+                }
+                vec.emplace_back(str);
+                curLine.clear();
+                curLineWidth = 0;
+            }
+            curLine.emplace_back(words[i]);
+            curLineWidth += words[i].length();
+        }
+        return vec;
+    }
+};
+//71. Simplify Path
+class Solution {
+public:
+    string simplifyPath(string path) {
+        string ret;
+        vector<string> vec;
+        int i = 0;
+        while(i < path.length()) {
+            while(i < path.length() && path[i] == '/')
+                i++;
+            if(i == path.length())
+                break;
+            string str;
+            while(i < path.length() && path[i] != '/')
+                str += path[i++];
+            if(str == ".." && !vec.empty())
+                vec.pop_back();
+            else if(str != "." && str != "..")
+                vec.emplace_back(str);
+        }
+        for(string s : vec)
+            ret += "/" + s;
+        if(vec.empty())
+            ret = "/";
+        return ret;
+    }
+};
