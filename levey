@@ -1025,3 +1025,93 @@ public:
         return ret;
     }
 };
+//97. Interleaving String
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        if(s1.length() + s2.length() != s3.length())
+            return false;
+        vector<vector<bool>> dp(s1.length() + 1, vector<bool>(s2.length() + 1, false));
+        dp[0][0] = true;
+        for(int i = 0; i <= s1.length(); i++) {
+            for(int j = 0; j <= s2.length(); j++) {
+                if((j > 0 && dp[i][j - 1] && s2[j - 1] == s3[i + j - 1]) || (i > 0 && dp[i - 1][j] && s1[i - 1] == s3[i + j - 1]))
+                    dp[i][j] = true;
+            }
+        }
+        return dp[s1.length()][s2.length()];
+    }
+};
+//76. Minimum Window Substring
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        string ret;
+        unordered_map<char, int> hash;
+        unordered_map<char, int>::iterator it;
+        for(int i = 0; i < t.length(); i++)
+            hash[t[i]]++;
+        int start = 0, end = 0;
+        int count = 0;
+        while(end < s.length()) {
+            while(count < t.length() && end < s.length()) {
+                it = hash.find(s[end++]);
+                if(it != hash.end()) {
+                    if(it->second > 0)
+                        count++;
+                    it->second--;
+                }
+            }
+            if(end == s.length() && count < t.length()) {
+                break;
+            }
+            while(start <= end && count >= t.length()) {
+                it = hash.find(s[start++]);
+                if(it != hash.end()) {
+                    if(it->second >= 0)
+                        count--;
+                    it->second++;
+                }
+            }
+            if(ret.empty() || end - start + 1 < ret.length())
+                ret = s.substr(start - 1, end - start + 1);
+        }
+        return ret;
+    }
+};
+//93. Restore IP Addresses
+class Solution {
+public:
+    vector<string> restoreIpAddresses(string s) {
+        if(s.length() < 4)
+            return vector<string>();
+        int k = 4;
+        vector<vector<vector<string>>> dp(s.length(), vector<vector<string>>(k));
+        dp[0][0].emplace_back(s.substr(0, 1));
+        if(s[0] != '0')
+            dp[1][0].emplace_back(s.substr(0, 2));
+        if(s[0] != '0' && atoi(s.substr(0, 3).c_str()) < 256)
+            dp[2][0].emplace_back(s.substr(0, 3));
+        for(int i = 1; i < s.length(); i++) {
+            for(int j = 1; j < k; j++) {
+                for(string str : dp[i - 1][j - 1]) {
+                    str += "." + s.substr(i, 1);
+                    dp[i][j].emplace_back(str);
+                }
+                if(i >= 2 && s[i- 1] != '0') {
+                    for(string str : dp[i - 2][j - 1]) {
+                        str += "." + s.substr(i - 1, 2);
+                        dp[i][j].emplace_back(str);
+                    }
+                }
+                if(i >= 3 && s[i- 2] != '0' && atoi(s.substr(i-2, 3).c_str()) < 256) {
+                    for(string str : dp[i - 3][j - 1]) {
+                        str += "." + s.substr(i - 2, 3);
+                        dp[i][j].emplace_back(str);
+                    }
+                }
+            }
+        }
+        return dp[s.length() - 1][k - 1];
+    }
+};
