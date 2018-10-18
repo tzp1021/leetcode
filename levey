@@ -1115,3 +1115,242 @@ public:
         return dp[s.length() - 1][k - 1];
     }
 };
+//154. Find Minimum in Rotated Sorted Array II
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        int i = 0, j = (int)nums.size() - 1;
+        while(i < j) {
+            if(nums[i] == nums[j]) {
+                while(i < j) {
+                    if(nums[j] < nums[i])
+                        return nums[j];
+                    i++;
+                }
+                return nums[j];
+            }
+            if(nums[i] < nums[j])
+                return nums[i];
+            int mid = (i + j) / 2;
+            if(nums[mid] >= nums[i])
+                i = mid + 1;
+            else
+                j = mid;
+        }
+        return nums[i];
+    }
+};
+//152. Maximum Product Subarray
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        if(nums.empty())
+            return 0;
+        int ret = nums[0];
+        int maxx = nums[0];
+        int minn = nums[0];
+        for(int i = 1; i < nums.size(); i++) {
+            int a = nums[i] * maxx;
+            int b = nums[i] * minn;
+            maxx = max(nums[i], max(a, b));
+            minn = min(nums[i], min(a, b));
+            if(ret < maxx)
+                ret = maxx;
+        }
+        return ret;
+    }
+};
+//155. Min Stack
+class MinStack {
+public:
+    vector<int> vec;
+    vector<int> mins;
+    MinStack() {
+        
+    }
+    
+    void push(int x) {
+        vec.emplace_back(x);
+        mins.emplace_back(mins.empty() ? x : min(mins.back(), x));
+    }
+    
+    void pop() {
+        vec.pop_back();
+        mins.pop_back();
+    }
+    
+    int top() {
+        return vec.back();
+    }
+    
+    int getMin() {
+        return mins.back();
+    }
+};
+//160. Intersection of Two Linked Lists
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        int len1 = 0;
+        int len2 = 0;
+        ListNode* p1 = headA;
+        ListNode* p2 = headB;
+        while(p1) {
+            p1 = p1->next;
+            len1++;
+        }
+        while(p2) {
+            p2 = p2->next;
+            len2++;
+        }
+        if(len1 >= len2) {
+            p1 = headA;
+            p2 = headB;
+        } else {
+            p1 = headB;
+            p2 = headA;
+            swap(len1, len2);
+        }
+        for(int i = 0; i < len1 - len2; i++)
+            p1 = p1->next;
+        for(int i = 0; i < len2; i++) {
+            if(p1 == p2)
+                return p1;
+            p1 = p1->next;
+            p2 = p2->next;
+        }
+        return NULL;
+    }
+};
+//162. Find Peak Element
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        if(nums.empty()) return -1;
+        int len = (int)nums.size();
+        if(len == 1) return 0;
+        if(nums[0] > nums[1]) return 0;
+        if(nums[len - 1] > nums[len - 2]) return len - 1;
+        for(int i = 1; i < len - 1; i++) {
+            if(nums[i] > nums[i + 1])
+                return i;
+        }
+        return len - 1;
+    }
+};
+//167. Two Sum II - Input array is sorted
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        int i = 0, j = (int)numbers.size() - 1;
+        vector<int> vec;
+        while(i < j) {
+            int sum = numbers[i] + numbers[j];
+            if(sum == target) {
+                vec.emplace_back(i + 1);
+                vec.emplace_back(j + 1);
+                return vec;
+            }
+            if(sum > target)
+                j--;
+            else
+                i++;
+        }
+        return vec;
+    }
+};
+//166. Fraction to Recurring Decimal
+class Solution {
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+        string ret;
+        long long a = numerator;
+        long long b = denominator;
+        if(a < 0 ^ b < 0)
+            ret = "-";
+        if(a < 0)
+            a = -a;
+        if(b < 0)
+            b = -b;
+        long long c = a / b;
+        a = a - b * c;
+        char buffer [33];
+        sprintf(buffer, "%lld", c);
+        ret += buffer;
+        if(a > 0) {
+            ret += ".";
+            int idx = (int)ret.length();
+            unordered_map<long long, long long> map;
+            a *= 10;
+            while(a && map.find(a) == map.end()) {
+                map[a] = idx;
+                idx++;
+                c = a / b;
+                a = a - b * c;
+                a *= 10;
+                sprintf(buffer, "%lld", c);
+                ret += buffer;
+            }
+            if(a) {
+                auto it = map.find(a);
+                ret.insert(it->second, "(");
+                ret += ")";
+            }
+        }
+        return ret;
+    }
+};
+//165. Compare Version Numbers
+class Solution {
+public:
+    int compareVersion(string version1, string version2) {
+        int v1;
+        int v2;
+        while(!version1.empty() || !version2.empty()) {
+            v1 = getNum(version1);
+            v2 = getNum(version2);
+            if(v1 < v2)
+                return -1;
+            if(v1 > v2)
+                return 1;
+        }
+        return 0;
+    }
+private:
+    int getNum(string& str) {
+        int num = 0;
+        int i;
+        for(i = 0; i < str.length(); i++) {
+            if(str[i] == '.')
+                break;
+            num = num * 10 + str[i] - '0';
+        }
+        if(i < str.length())
+            str = str.substr(i + 1);
+        else
+            str = str.substr(i);
+        return num;
+    }
+};
+//168. Excel Sheet Column Title
+class Solution {
+public:
+    string convertToTitle(int n) {
+        string ret;
+        char c;
+        while(n > 26) {
+            int a = n / 26;
+            int b = n % 26;
+            if(b == 0) {
+                b = 26;
+                a--;
+            }
+            c =  'A' + b - 1;
+            ret = c + ret;
+            n = a;
+        }
+        c = 'A' + n - 1;
+        ret = c + ret;
+        return ret;
+    }
+};
