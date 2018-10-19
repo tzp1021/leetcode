@@ -1354,3 +1354,172 @@ public:
         return ret;
     }
 };
+//169. Majority Element
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        int ret = 0;
+        int count = 0;
+        for(int num : nums) {
+            if(count == 0) {
+                count++;
+                ret = num;
+                continue;
+            }
+            if(num == ret)
+                count++;
+            else
+                count--;
+        }
+        return ret;
+    }
+};
+//172. Factorial Trailing Zeroes
+class Solution {
+public:
+    int trailingZeroes(int n) {
+        int ret = 0;
+        while(n >= 5) {
+            ret += n / 5;
+            n /= 5;
+        }
+        return ret;
+    }
+};
+//164. Maximum Gap
+class Solution {
+public:
+    int maximumGap(vector<int>& nums) {
+        if(nums.empty())
+            return 0;
+        int min_ = nums[0];
+        int max_ = nums[0];
+        for(int num : nums) {
+            min_ = min(min_, num);
+            max_ = max(max_, num);
+        }
+        if(max_ == min_)
+            return 0;
+        vector<vector<int>> bucket(nums.size());
+        int gap = ceil((double)(max_ - min_) / (nums.size() - 1));
+        for(int num : nums) {
+            int idx = (num - min_) / gap;
+            if(bucket[idx].empty()) {
+                bucket[idx].emplace_back(num);
+                bucket[idx].emplace_back(num);
+            } else {
+                bucket[idx][0] = min(bucket[idx][0], num);
+                bucket[idx][1] = max(bucket[idx][1], num);
+            }
+        }
+        int ret = 0;
+        int last = bucket[0][0];
+        for(int i = 0; i < nums.size(); i++) {
+            if(bucket[i].empty())
+                continue;
+            for(int j = 0; j < 2; j++) {
+                if(bucket[i][j] > last)
+                    ret = max(ret, bucket[i][j] - last);
+                last = bucket[i][j];
+            }
+        }
+        return ret;
+    }
+};
+//171. Excel Sheet Column Number
+class Solution {
+public:
+    int titleToNumber(string s) {
+        int ret = 0;
+        int k = 1;
+        for(int i = (int)s.length() - 1; i >= 0; i--) {
+            ret += (s[i] - 'A' + 1) * k;
+            k *= 26;
+        }
+        return ret;
+    }
+};
+//173. Binary Search Tree Iterator
+class BSTIterator {
+private:
+    stack<TreeNode*> st;
+    void pushLeft(TreeNode* node) {
+        while(node) {
+            st.push(node);
+            node = node->left;
+        }
+    }
+    
+public:
+    BSTIterator(TreeNode *root) {
+        pushLeft(root);
+    }
+    
+    bool hasNext() {
+        return !st.empty();
+    }
+    
+    int next() {
+        TreeNode* node = st.top();
+        st.pop();
+        int res = node->val;
+        pushLeft(node->right);
+        return res;
+    }
+};
+//179. Largest Number
+class Solution {
+public:
+    string largestNumber(vector<int>& nums) {
+        vector<string> vec;
+        char buff[33];
+        for(int num : nums) {
+            sprintf(buff, "%d", num);
+            vec.emplace_back(buff);
+        }
+        sort(vec.begin(), vec.end(), myComparator);
+        string ret;
+        for(string str : vec) {
+            ret += str;
+        }
+        int k = 0;
+        while(k < ret.length() - 1 && ret[k] == '0')
+            k++;
+        return ret.substr(k);
+    }
+private:
+    static bool myComparator(string s1,string s2) {
+        return s1 + s2 > s2 + s1 ? true : false;
+    }
+};
+//187. Repeated DNA Sequences
+class Solution {
+public:
+    vector<string> findRepeatedDnaSequences(string s) {
+        unordered_set<string> set_;
+        unordered_set<string> set_res;
+        vector<string> res;
+        int len = s.length();
+        for(int i = 1; i < len - 9; i++) {
+            set_.insert(s.substr(i - 1, 10));
+            string str = s.substr(i, 10);
+            if(set_.find(str) != set_.end() && set_res.find(str) == set_res.end()) {
+                set_res.insert(str);
+                res.emplace_back(str);
+            }
+        }
+        return res;
+    }
+};
+//190. Reverse Bits
+class Solution {
+public:
+    uint32_t reverseBits(uint32_t n) {
+        uint32_t ret = 0;
+        for (int i = 0; i < 32; i++) {
+            if ((1 << i) & n)
+                ret |= 1 << (32 - i - 1);
+        }
+        return ret;
+    }
+};
