@@ -1797,8 +1797,8 @@ class Trie {
         TreeNode2* childs[26] = {NULL};
         TreeNode2() : isEnd(false) { }
     };
-public:
     TreeNode2* root;
+public:
     Trie() {
         root = new TreeNode2();
     }
@@ -1831,5 +1831,155 @@ public:
             node = node->childs[c - 'a'];
         }
         return true;
+    }
+};
+//209. Minimum Size Subarray Sum
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int i = 0, j = 0;
+        int n = (int)nums.size();
+        int sum = 0;
+        int res = 0;
+        while(true) {
+            while(j < n && sum < s)
+                sum += nums[j++];
+            if(sum < s)
+                break;
+            while(i < j && sum >= s)
+                sum -= nums[i++];
+            if(res == 0 || res > j - i + 1)
+                res = j - i + 1;
+        }
+        return res;
+    }
+};
+//211. Add and Search Word - Data structure design
+class WordDictionary {
+    struct TreeNode2 {
+        bool isEnd;
+        TreeNode2* childs[26] = {NULL};
+        TreeNode2() : isEnd(false) { }
+    };
+    TreeNode2* root;
+public:
+    WordDictionary() {
+        root = new TreeNode2();
+    }
+    
+    void addWord(string word) {
+        TreeNode2* node = root;
+        for(char c : word) {
+            if(node->childs[c - 'a'] == NULL)
+                node->childs[c - 'a'] = new TreeNode2();
+            node = node->childs[c - 'a'];
+        }
+        node->isEnd = true;
+    }
+    
+    bool search(string word) {
+        return search(root, word);
+    }
+private:
+    bool search(TreeNode2* node, string word) {
+        for(int i = 0; i < word.length(); i++) {
+            if(word[i] == '.') {
+                for(int j = 0; j < 26; j++)
+                    if(node->childs[j] && search(node->childs[j], word.substr(i + 1)))
+                        return true;
+                return false;
+            }
+            if(node->childs[word[i] - 'a'] == NULL)
+                return false;
+            node = node->childs[word[i] - 'a'];
+        }
+        return node->isEnd;
+    }
+};
+//188. Best Time to Buy and Sell Stock IV
+class Solution {
+public: //dp, O(n * k)) l[i][j]:day i must sell, g[i][j]: day i may not sell.
+    int maxProfit(int k, vector<int>& prices) {
+        if(prices.empty())
+            return 0;
+        if(k >= prices.size() / 2)
+            return quickSolve(prices);
+        int n = (int)prices.size();
+        vector<int> l(k + 1, 0);
+        vector<int> g(k + 1, 0);
+        for(int i = 1; i < n; i++) {
+            int diff = prices[i] - prices[i - 1];
+            for(int j = k; j > 0; j--) {
+                l[j] = max(g[j - 1] + max(diff, 0), l[j] + diff);
+                g[j] = max(g[j], l[j]);
+            }
+        }
+        return g[k];
+    }
+private:
+    int quickSolve(vector<int>& prices) {
+        int res = 0;
+        for(int i = 1; i < prices.size(); i++) {
+            if(prices[i] > prices[i - 1]) {
+                res += prices[i] - prices[i - 1];
+            }
+        }
+        return res;
+    }
+};
+class Solution {
+public: //dp[i][j] = max(dp[i][j - 1], max(dp[i - 1][t - 1] + prices[j] - prices[t])), tmp = max(dp[i - 1][t - 1] - prices[t])
+    int maxProfit(int k, vector<int>& prices) {
+        if(prices.empty())
+            return 0;
+        int n = (int)prices.size();
+        if(k >= n / 2) {
+            int res = 0;
+            for(int i = 1; i < n; i++)
+                if(prices[i] > prices[i - 1])
+                    res += prices[i] - prices[i - 1];
+            return res;
+        }
+        vector<vector<int>> dp(k + 1, vector<int>(n));
+        for(int i = 1; i <= k; i++) {
+            int tmp = -prices[0];
+            for(int j = 1; j < n; j++) {
+                dp[i][j] = max(dp[i][j - 1], tmp + prices[j]);
+                tmp = max(tmp, dp[i - 1][j - 1] - prices[j]);
+            }
+        }
+        return dp[k][n - 1];
+    }
+};
+class Solution {
+public: //O(n + k * log(n))
+    int maxProfit(int k, vector<int>& prices) {
+        int v, p = 0, res = 0;
+        int n = (int)prices.size();
+        priority_queue<int> profits;
+        stack<pair<int, int>> vp_pairs;
+        while(p < n) {
+            for(v = p; v < n - 1 && prices[v + 1] <= prices[v]; v++);
+            for(p = v + 1; p < n && prices[p] >= prices[p - 1]; p++);
+            while(!vp_pairs.empty() && prices[vp_pairs.top().first] > prices[v]) {
+                profits.emplace(prices[vp_pairs.top().second] - prices[vp_pairs.top().first]);
+                vp_pairs.pop();
+            }
+            while(!vp_pairs.empty() && prices[vp_pairs.top().second] < prices[p - 1]) {
+                profits.emplace(prices[vp_pairs.top().second] - prices[v]);
+                v = vp_pairs.top().first;
+                vp_pairs.pop();
+            }
+            vp_pairs.emplace(v, p - 1);
+        }
+        while(!vp_pairs.empty()) {
+            profits.emplace(prices[vp_pairs.top().second] - prices[vp_pairs.top().first]);
+            vp_pairs.pop();
+        }
+        for(int i = 0; i < k && !profits.empty(); i++) {
+            res += profits.top();
+            profits.pop();
+        }
+        return res;
     }
 };
