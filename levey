@@ -2088,3 +2088,20 @@ public:
         return false;
     }
 };
+//214. Shortest Palindrome
+class Solution {
+public:
+    string shortestPalindrome(string s) {
+        string rev_s = s;
+        reverse(rev_s.begin(), rev_s.end());
+        string ss = s + "#" + rev_s;
+        vector<int> next(ss.length(), 0);
+        for(int i = 1; i < ss.length(); i++) {
+            int j = next[i - 1];
+            while(j > 0 && ss[i] != ss[j])
+                j = next[j - 1];
+            next[i] = j + (ss[i] == ss[j]);
+        }
+        return rev_s.substr(0, s.length() - next[ss.length() - 1]) + s;
+    }
+};
