@@ -1614,6 +1614,34 @@ public:
         return dp[len - 1];
     }
 };
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int dp[2] = {0};
+        for(int i = 0; i < nums.size(); i++) {
+            dp[i & 1] += nums[i];
+            dp[i & 1] = max(dp[0], dp[1]);
+        }
+        return max(dp[0], dp[1]);
+    }
+};
+//213. House Robber II
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n = (int)nums.size();
+        if(n == 1) return nums[0];
+        return max(getMax(nums, 0, n - 1), getMax(nums, 1, n));
+    }
+    int getMax(vector<int>& nums, int start, int end) {
+        int dp[2] = {0};
+        for(int i = start; i < end; i++) {
+            dp[i & 1] += nums[i];
+            dp[i & 1] = max(dp[0], dp[1]);
+        }
+        return max(dp[0], dp[1]);
+    }
+};
 //199. Binary Tree Right Side View
 class Solution {
 public:
@@ -1981,5 +2009,82 @@ public: //O(n + k * log(n))
             profits.pop();
         }
         return res;
+    }
+};
+//207. Course Schedule
+//210. Course Schedule II
+class TopoGraph {
+private:
+    vector<vector<bool>> edges;
+    vector<int> indegrees;
+    queue<int> q;
+    int N;
+public:
+    TopoGraph(int num) {
+        N = num;
+        edges.resize(num, vector<bool>(num, false));
+        indegrees.resize(num, 0);
+    }
+    
+    void addEdge(int a, int b) {
+        edges[a][b] = true;
+        indegrees[b]++;
+    }
+    
+    bool canFinish() {
+        int count = 0;
+        for(int i = 0; i < N; i++)
+            if(indegrees[i] == 0)
+                q.emplace(i);
+        while(!q.empty()) {
+            int a = q.front();
+            q.pop();
+            count++;
+            for(int i = 0; i < N; i++) {
+                if(edges[a][i]) {
+                    indegrees[i]--;
+                    if(indegrees[i] == 0)
+                        q.emplace(i);
+                }
+            }
+        }
+        if(count == N)
+            return true;
+        return false;
+    }
+    
+    vector<int> findOrder() {
+        vector<int> res;
+        for(int i = 0; i < N; i++)
+            if(indegrees[i] == 0)
+                q.emplace(i);
+        while(!q.empty()) {
+            int a = q.front();
+            q.pop();
+            res.emplace_back(a);
+            for(int i = 0; i < N; i++) {
+                if(edges[a][i]) {
+                    indegrees[i]--;
+                    if(indegrees[i] == 0)
+                        q.emplace(i);
+                }
+            }
+        }
+        if(res.size() != N)
+            res.clear();
+        return res;
+    }
+};
+//217. Contains Duplicate
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& nums) {
+        unordered_set<int> set;
+        for(int num : nums) {
+            if(set.find(num) != set.end())
+                return true;
+            set.emplace(num);
+        }
+        return false;
     }
 };
