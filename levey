@@ -2105,3 +2105,89 @@ public:
         return rev_s.substr(0, s.length() - next[ss.length() - 1]) + s;
     }
 };
+//337. House Robber III
+class Solution {
+public:
+    int rob(TreeNode* root) {
+        int curMax, childMax;
+        getNodeMax(root, curMax, childMax);
+        return curMax;
+    }
+    
+    void getNodeMax(TreeNode* node, int& curMax, int& childMax) {
+        if(node == NULL) {
+            curMax = childMax = 0;
+            return;
+        }
+        int leftMax, leftChildMax, rightMax, rightChildMax;
+        getNodeMax(node->left, leftMax, leftChildMax);
+        getNodeMax(node->right, rightMax, rightChildMax);
+        childMax = leftMax + rightMax;
+        curMax = max(childMax, node->val + leftChildMax + rightChildMax);
+    }
+};
+//212. Word Search II
+class Solution {
+    struct TrieNode {
+        TrieNode* children[26] = {0};
+        int isEnd = -1;
+        TrieNode() { }
+    };
+public:
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+        vector<string> res;
+        vector<int> idxs;
+        if(board.size() == 0)
+            return res;
+        TrieNode* root = new TrieNode();
+        for(int i = 0; i < words.size(); i++) {
+            TrieNode* node = root;
+            for(int j = 0; j < words[i].length(); j++) {
+                if(node->children[words[i][j] - 'a'] == NULL)
+                    node->children[words[i][j] - 'a'] = new TrieNode();
+                node = node->children[words[i][j] - 'a'];
+            }
+            node->isEnd = i;
+        }
+        for(int i = 0; i < board.size(); i++) {
+            for(int j = 0; j < board[0].size(); j++) {
+                dfs(board, i, j, root, idxs);
+            }
+        }
+        for(int idx : idxs)
+            res.emplace_back(words[idx]);
+        return res;
+    }
+    
+    void dfs(vector<vector<char>>& board, int i, int j, TrieNode* node, vector<int>& idxs) {
+        if(node == NULL || i < 0 || i >= board.size() || j < 0 || j >= board[0].size() || board[i][j] < 'a' || board[i][j] > 'z')
+            return;
+        int idx = board[i][j] - 'a';
+        if(node->children[idx]) {
+            if(node->children[idx]->isEnd != -1) {
+                idxs.emplace_back(node->children[idx]->isEnd);
+                node->children[idx]->isEnd = -1;
+            }
+            board[i][j] = '#';
+            dfs(board, i - 1, j, node->children[idx], idxs);
+            dfs(board, i + 1, j, node->children[idx], idxs);
+            dfs(board, i, j - 1, node->children[idx], idxs);
+            dfs(board, i, j + 1, node->children[idx], idxs);
+            board[i][j] = idx + 'a';
+        }
+    }
+};
+//219. Contains Duplicate II
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        unordered_map<int, int> map;
+        for(int i = 0; i < nums.size(); i++) {
+            auto it = map.find(nums[i]);
+            if(it != map.end() && i - it->second <= k)
+                return true;
+            map[nums[i]] = i;
+        }
+        return false;
+    }
+};
