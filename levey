@@ -2191,3 +2191,362 @@ public:
         return false;
     }
 };
+//220. Contains Duplicate III
+class Solution {
+public:
+    bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+        set<int> set;
+        for(int i = 0; i < nums.size(); i++) {
+            if(i > k) {
+                set.erase(nums[i - k - 1]);
+            }
+            auto it = set.lower_bound((long long)nums[i] - t);
+            if(it != set.end() && *it - nums[i] <= t)
+                return true;
+            set.insert(nums[i]);
+        }
+        return false;
+    }
+};
+//218. The Skyline Problem
+class Solution {
+public:
+    vector<pair<int, int>> getSkyline(vector<vector<int>>& buildings) {
+        vector<pair<int, int>> heights;
+        for(auto it : buildings) {
+            heights.emplace_back(it[0], -it[2]);
+            heights.emplace_back(it[1], it[2]);
+        }
+        sort(heights.begin(), heights.end());
+        vector<pair<int, int>> res;
+        multiset<int> set;
+        set.emplace(0);
+        int pre = 0;
+        for(auto h : heights) {
+            if(h.second < 0)
+                set.emplace(-h.second);
+            else
+                set.erase(set.find(h.second));
+            int cur = *set.rbegin();
+            if(pre != cur) {
+                res.emplace_back(h.first, cur);
+                pre = cur;
+            }
+        }
+        return res;
+    }
+};
+//222. Count Complete Tree Nodes
+class Solution {
+public:
+    int countNodes(TreeNode* root) {
+        if(!root)
+            return 0;
+        int h = 0;
+        TreeNode* l = root;
+        TreeNode* r = root;
+        while(r) {
+            l = l->left;
+            r = r->right;
+            h++;
+        }
+        if(!l)
+            return (1 << h) - 1;
+        return 1 + countNodes(root->left) + countNodes(root->right);
+    }
+};
+//221. Maximal Square
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        if(matrix.empty())
+            return 0;
+        int m = (int)matrix.size();
+        int n = (int)matrix[0].size();
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+        int res = 0;
+        for(int i = 1; i <= m; i++) {
+            for(int j = 1; j <= n; j++) {
+                if(matrix[i-1][j-1] == '0') {
+                    dp[i][j] = 0;
+                } else {
+                    dp[i][j] = min(dp[i-1][j-1], min(dp[i-1][j], dp[i][j-1])) + 1;
+                    res = max(res, dp[i][j]);
+                }
+            }
+        }
+        return res * res;
+    }
+};
+//226. Invert Binary Tree
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(root) {
+            TreeNode* t = root->left;
+            root->left = root->right;
+            root->right = t;
+            invertTree(root->left);
+            invertTree(root->right);
+        }
+        return root;
+    }
+};
+//224. Basic Calculator
+class Solution {
+public:
+    int calculate(string s) {
+        stack<int> nums, ops;
+        int ans = 0, sign = 1;
+        for(int i = 0; i < s.length(); i++) {
+            if(isdigit(s[i])) {
+                int num = 0;
+                while(isdigit(s[i]))
+                    num = num * 10 + s[i++] - '0';
+                ans += (sign * num);
+                i--;
+            }
+            else if(s[i] == '-' || s[i] == '+') {
+                sign = s[i] == '-' ? -1 : 1;
+            } else if(s[i] == '(') {
+                nums.emplace(ans);
+                ops.emplace(sign);
+                ans = 0;
+                sign = 1;
+            } else if(s[i] == ')') {
+                ans *= ops.top();
+                ans += nums.top();
+                ops.pop();
+                nums.pop();
+            }
+        }
+        return ans;
+    }
+};
+//223. Rectangle Area
+class Solution {
+public:
+    int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+        int total = (C - A) * (D - B) + (G - E) * (H - F);
+        if(A >= G || B >= H || C <= E || D <= F) return total;
+        return total - (min(C, G) - max(A, E)) * (min(D, H) - max(B, F));
+    }
+};
+//228. Summary Ranges
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        vector<string> res;
+        int start = 0;
+        for(int i = 0; i < nums.size(); i++) {
+            if(i == nums.size() - 1 || nums[i + 1] - nums[i] != 1) {
+                string s = to_string(nums[start]);
+                if(i != start) {
+                    s += "->";
+                    s += to_string(nums[i]);
+                }
+                res.emplace_back(s);
+                start = i + 1;
+            }
+        }
+        return res;
+    }
+};
+//230. Kth Smallest Element in a BST
+class Solution {
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        stack<TreeNode*> st;
+        TreeNode* node = root;
+        while(!st.empty() || node) {
+            while(node) {
+                st.emplace(node);
+                node = node->left;
+            }
+            if(!st.empty()) {
+                node = st.top();
+                st.pop();
+                k--;
+                if(k == 0)
+                    return node->val;
+                node = node->right;
+            }
+        }
+        return 0;
+    }
+};
+//231. Power of Two
+class Solution {
+public:
+    bool isPowerOfTwo(int n) {
+        if(n <= 0) return false;
+        return !(n & (n - 1));
+    }
+};
+//227. Basic Calculator II
+class Solution {
+public:
+    int calculate(string s) {
+        deque<int> nums;
+        deque<char> ops;
+        for(int i = 0; i < s.length(); i++) {
+            if(isdigit(s[i])) {
+                int num = 0;
+                while(isdigit(s[i]))
+                    num = num * 10 + s[i++] - '0';
+                i--;
+                if(!ops.empty() && (ops.back() == '*' || ops.back() == '/')) {
+                    int a = nums.back();
+                    if(ops.back() == '*')
+                        num = a * num;
+                    else
+                        num = a / num;
+                    ops.pop_back();
+                    nums.pop_back();
+                }
+                nums.emplace_back(num);
+            }
+            else if(s[i] == '*' || s[i] == '/' || s[i] == '+' || s[i] == '-')
+                ops.emplace_back(s[i]);
+        }
+        int res = nums.front();
+        nums.pop_front();
+        while(!ops.empty()) {
+            int b = nums.front();
+            nums.pop_front();
+            if(ops.front() == '*')
+                res *= b;
+            else if(ops.front() == '/')
+                res /= b;
+            else if(ops.front() == '+')
+                res += b;
+            else if(ops.front() == '-')
+                res -= b;
+            ops.pop_front();
+        }
+        return res;
+    }
+};
+//229. Majority Element II
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+        map<int, int> map_;
+        for(int num : nums) {
+            map_[num]++;
+            if(map_.size() > 2) {
+                for(auto it = map_.begin(); it != map_.end();) {
+                    it->second--;
+                    if(it->second == 0) {
+                        map_.erase(it++);
+                    } else {
+                        it++;
+                    }
+                }
+            }
+        }
+        vector<int> res;
+        for(auto it = map_.begin(); it != map_.end(); it++) {
+            int count = 0;
+            for(int num : nums)
+                if(num == it->first)
+                    count++;
+            if(count > nums.size() / 3)
+                res.emplace_back(it->first);
+        }
+        return res;
+    }
+};
+//223. Number of Digit One
+class Solution {
+public:
+    int countDigitOne(int n) {
+        if(n < 0)
+            return 0;
+        int res = 0;
+        int k = 1;
+        int nn = n;
+        while(nn) {
+            int a = nn / 10;
+            int b = nn % 10;
+            int c = n % k;
+            res += a * k;
+            if(b > 1)
+                res += k;
+            if(b == 1)
+                res += c + 1;
+            k *= 10;
+            nn /= 10;
+        }
+        return res;
+    }
+};
+//239. Sliding Window Maximum
+class Solution {
+public:
+    //单调队列
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        vector<int> res;
+        deque<int> mono_que;
+        for(int i = 0; i < nums.size(); i++) {
+            if(!mono_que.empty() && i - k == mono_que.front())
+                mono_que.pop_front();
+            while(!mono_que.empty() && nums[mono_que.back()] < nums[i])
+                mono_que.pop_back();
+            mono_que.emplace_back(i);
+            if(i >= k - 1)
+                res.emplace_back(nums[mono_que.front()]);
+        }
+        return res;
+    }
+};
+//238. Product of Array Except Self
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        if(nums.empty())
+            return vector<int>();
+        vector<int> res(nums.size(), 1);
+        int a = 1, b = 1;
+        for(int i = 0; i < nums.size(); i++) {
+            res[i] *= a;
+            a *= nums[i];
+            res[nums.size() - i - 1] *= b;
+            b *= nums[nums.size() - i - 1];
+        }
+        return res;
+    }
+};
+//236. Lowest Common Ancestor of a Binary Tree
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(root == nullptr || root == p || root == q)
+            return root;
+        TreeNode* left = lowestCommonAncestor(root->left, p, q);
+        TreeNode* right = lowestCommonAncestor(root->right, p, q);
+        if(left == nullptr)
+            return right;
+        if(right == nullptr)
+            return left;
+        return root;
+    }
+};
+//242. Valid Anagram
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        if(s.length() != t.length())
+            return false;
+        map<char, int> _map;
+        for(char c : s) {
+            _map[c - 'a']++;
+        }
+        for(char c : t) {
+            _map[c - 'a']--;
+            if(_map[c - 'a'] < 0)
+                return false;
+        }
+        return true;
+    }
+};
